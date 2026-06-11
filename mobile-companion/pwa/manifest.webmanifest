@@ -1,0 +1,17 @@
+{
+  "name": "Furx Mobile",
+  "short_name": "Furx",
+  "description": "Companion for the Furx desktop — view panes, send commands, approve tool-calls.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f3efe6",
+  "theme_color": "#f3efe6",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

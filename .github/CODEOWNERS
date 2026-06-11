@@ -1,0 +1,14 @@
+# Code owners — auto-requested for review on matching paths.
+# Docs: https://docs.github.com/articles/about-code-owners
+# Update the owner handles before enabling branch protection that requires CODEOWNERS review.
+
+# Default owner for everything in the repo
+*                       @hernaninverso
+
+# Build / release / CI automation
+/.github/               @hernaninverso
+/src-tauri/             @hernaninverso
+
+# Documentation
+/docs/                  @hernaninverso
+*.md                    @hernaninverso

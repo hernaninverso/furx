@@ -1,0 +1,18 @@
+{
+  "name": "find-files",
+  "version": "1.0.0",
+  "description": "Lista archivos recientes del dir.",
+  "entrypoint": "run.sh",
+  "entrypoint_sha256": "8851e68cf5c5c72d8d7b15da3246bcf502ee70d017d151ab596ee9243ab98db1",
+  "permissions": {
+    "net": [],
+    "fs_read": [
+      "."
+    ],
+    "fs_write": [],
+    "shell": false,
+    "secrets": []
+  },
+  "signature": "WdxRdAUikqa9WKPhENmfmKb5SvdQ0EEJi++/ubg5Uf9HB9j88iDR6jx1rqbW39sRPRkgLRwizj+f1Jbod8JxCQ==",
+  "pubkey": "bgkQbOB0kcIRVzmmv7FVf8Bm2Cx/UPsDbT0VNcBrOp8="
+}

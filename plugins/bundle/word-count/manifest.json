@@ -1,0 +1,18 @@
+{
+  "name": "word-count",
+  "version": "1.0.0",
+  "description": "Conteo de líneas/palabras de archivos del dir.",
+  "entrypoint": "run.sh",
+  "entrypoint_sha256": "0c6c8ae130c4b7e1277afba1a31a349564dfa89eadec8f95817f3ba6a4803196",
+  "permissions": {
+    "net": [],
+    "fs_read": [
+      "."
+    ],
+    "fs_write": [],
+    "shell": false,
+    "secrets": []
+  },
+  "signature": "9+dB9tGhoDIRuw+2Yhuz+4St4H80OR73A1x3tbSvRHWhnpTERS8otJjA3PDZQudHEpZKdXW2zR87awOs5YvIDA==",
+  "pubkey": "bgkQbOB0kcIRVzmmv7FVf8Bm2Cx/UPsDbT0VNcBrOp8="
+}

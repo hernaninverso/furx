@@ -1,0 +1,18 @@
+{
+  "name": "http-get",
+  "version": "1.0.0",
+  "description": "GET HTTP de una URL (requiere grant de red explícito).",
+  "entrypoint": "run.sh",
+  "entrypoint_sha256": "d706aacb97479d5ebef2db5542bbc7b5213607f9977487aa876eaf609b1870d6",
+  "permissions": {
+    "net": [
+      "*"
+    ],
+    "fs_read": [],
+    "fs_write": [],
+    "shell": false,
+    "secrets": []
+  },
+  "signature": "bYw5bJxzzqFFwlFliQLGFIx842ALU88c8XdjQCWHnBR/Q5DVzEByiE1TzYB0ZMcsWl5p6b0qDOlvaN90NgiFAw==",
+  "pubkey": "bgkQbOB0kcIRVzmmv7FVf8Bm2Cx/UPsDbT0VNcBrOp8="
+}

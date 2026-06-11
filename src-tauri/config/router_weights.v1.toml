@@ -1,0 +1,55 @@
+# Cost-Router Classifier v2 — pesos y thresholds (REFERENCIA / IaC).
+#
+# spec-052. Esta es la fuente de verdad DOCUMENTAL del council. El runtime NO carga este archivo: usa
+# `RouterConfig::default_v1()` embebido en Rust (sin parse en boot ⇒ sin punto de fallo). Mantener este
+# TOML sincronizado con el default Rust; un cambio acá es una propuesta hasta portarlo al default v1.
+#
+# Validación (RouterConfig::validate): los pesos suman 1.0 ± 0.001; divisores ≠ 0; thresholds en [0,1]
+# con premium > free (excepto sensitive, que es hard gate).
+
+version = 1
+
+[weights]
+tool_count       = 0.30
+context_fraction = 0.25
+token_count      = 0.20
+has_code         = 0.15
+turn_count       = 0.07
+priority         = 0.03
+# suma = 1.00
+
+[caps]
+token_count_cap = 128000
+tool_count_max  = 20
+turn_count_max  = 30
+
+# Thresholds por task_type: score >= premium ⇒ premium; score <= free ⇒ local/free; entre medio ⇒
+# incertidumbre ⇒ premium (fail-closed). interactive es el más conservador (error de calidad cuesta más).
+[thresholds.interactive]
+premium = 0.60
+free    = 0.30
+
+[thresholds.batch_verified]
+premium = 0.70
+free    = 0.25
+
+[thresholds.background_daemon]
+premium = 0.80
+free    = 0.20
+
+[thresholds.sensitive]
+# siempre premium (hard gate redundante; aquí por claridad)
+premium = 0.00
+free    = 0.00
+
+# SLA por task_type (ms) — puente bool→F1Outcome y reward del bandit.
+[sla_ms]
+interactive      = 3000
+batch_verified   = 10000
+background_daemon = 30000
+local_latency    = 2000
+
+# Circuit breaker del escalón free.
+[circuit_breaker]
+fail_threshold   = 3
+base_cooldown_ms = 30000   # con jitter por installation_id, cap 300000

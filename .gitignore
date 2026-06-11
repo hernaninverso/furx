@@ -1,0 +1,66 @@
+node_modules/
+dist/
+src-tauri/target/
+src-tauri/gen/
+mobile-companion/app/src-tauri/gen/
+*.log
+*.tsbuildinfo
+.DS_Store
+.furxexport
+
+# Secrets / credentials / certs — never commit these
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
+*.key
+*.cer
+*.mobileprovision
+*.db
+*.sqlite
+*.sqlite3
+backups/
+/tmp/furx_*
+runs/
+design-preview.html
+design-preview2.html
+design-preview3.html
+design-preview4.html
+.claude/worktrees/
+
+# Next.js static export / build output
+site/.next/
+site/out/
+app-dashboard/.next/
+web-companion/.next/
+next-env.d.ts
+
+# Internal planning / personal tooling — not part of the public OSS tree
+site/council-out/
+docs/MEMORY_INTEGRATION.md
+docs/cost-router/
+scripts/zeno-wizard.sh
+
+# Internal specs / analysis (kept on disk, excluded from the public tree)
+docs/wiring-redesign/
+docs/055-nav-restructure-spec.md
+docs/060-onboarding-cli-config-spec.md
+docs/064-health-check-onboarding-spec.md
+docs/nav-competitive-analysis-054.md
+docs/FURX_SETUP_CONTRACT.md
+docs/IOS_SCAFFOLDING.md
+docs/mcp-parity.md
+
+# Internal — not part of the public OSS tree (kept on disk)
+CLAUDE.md
+HUMAN_ACTIONS.md
+PLAN_CLOSE.md
+PLAN_REST.md
+PLAN_VIGENTE.md
+PLAN_ZENO.md
+dev-signed.sh
+specs/
+.specify/
+.claude/
+site/PLAN_WEB.md

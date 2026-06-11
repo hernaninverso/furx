@@ -1,0 +1,25 @@
+{
+  "name": "mcp-language-server",
+  "version": "1.0.0",
+  "description": "mcp-language-server (isaacphi, BSD-3-Clause) — real diagnostics/rename/definition via a backing LSP (gopls/rust-analyzer/pyright…). Offline (net:false). Spawns ONLY the user-named LSP ($MCP_LSP_COMMAND), no arbitrary shell. Runtime deps: the Go binary + the chosen LSP (or set MCP_LANGUAGE_SERVER_BIN).",
+  "entrypoint": "run.sh",
+  "entrypoint_sha256": "66a42061627fe687b19ab82aa961db9899fb403fefdae4113ce5d411311b1094",
+  "permissions": {
+    "net": [],
+    "fs_read": [
+      "$PROJECT_ROOT"
+    ],
+    "fs_write": [],
+    "shell": false,
+    "secrets": []
+  },
+  "signature": "1H6qwZi+XAIrBcv7U6lXSsT4aWDdDPErJXFgsdX/VjxFw4AcuSlZnc2NZzrsr+1LtlD9VR9xNXdDwmO/63C4DA==",
+  "pubkey": "bgkQbOB0kcIRVzmmv7FVf8Bm2Cx/UPsDbT0VNcBrOp8=",
+  "mcp": {
+    "command": "run.sh",
+    "args": [
+      "$PROJECT_ROOT"
+    ],
+    "env": {}
+  }
+}

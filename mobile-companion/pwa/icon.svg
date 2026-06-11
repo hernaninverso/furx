@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Furx">
+  <!-- Furx V3 app icon — full-bleed warm-ink (maskable-safe) + Fraunces italic F. -->
+  <rect width="128" height="128" fill="#16130f"/>
+  <text x="64" y="90" text-anchor="middle" fill="#efe7d8"
+        font-family="Fraunces, Georgia, 'Times New Roman', serif"
+        font-style="italic" font-weight="600" font-size="82">F</text>
+</svg>

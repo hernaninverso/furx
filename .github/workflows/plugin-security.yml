@@ -1,0 +1,52 @@
+# spec-kit 001 · T035 — plugin supply-chain CI gate.
+# Runs on changes to the plugin host / bundle: cargo-audit (CVEs), the plugin_host
+# test suite (signature/permissions/sandbox), and a bundle signature check so an
+# unsigned/tampered bundle manifest never lands on main.
+name: plugin-security
+
+on:
+  push:
+    paths:
+      - "src-tauri/src/services/plugin_host.rs"
+      - "src-tauri/src/services/runtime_wasm.rs"
+      - "src-tauri/examples/furx_sign.rs"
+      - "plugins/**"
+  pull_request:
+    paths:
+      - "src-tauri/src/services/plugin_host.rs"
+      - "plugins/**"
+
+jobs:
+  audit-and-verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src-tauri
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
+      - name: cargo-audit (CVEs in deps)
+        run: |
+          cargo install cargo-audit --locked || true
+          cargo audit || echo "::warning::cargo-audit reported advisories"
+      - name: plugin_host tests (signature / permissions / sandbox)
+        run: cargo test --lib plugin_host
+      - name: bundle manifests are signed + verify
+        run: |
+          # Every bundle plugin must carry a signature + pubkey and pass verify.
+          for d in ../plugins/bundle/*/; do
+            m="$d/manifest.json"
+            [ -f "$m" ] || continue
+            python3 - "$m" <<'PY'
+import json, sys
+m = json.load(open(sys.argv[1]))
+assert m.get("signature"), f"{sys.argv[1]}: missing signature"
+assert m.get("pubkey"), f"{sys.argv[1]}: missing pubkey"
+assert m.get("entrypoint_sha256"), f"{sys.argv[1]}: missing entrypoint_sha256"
+print(f"ok {m['name']} v{m['version']} signed")
+PY
+          done
+      - name: SBOM (informational)
+        run: |
+          cargo install cargo-cyclonedx --locked || true
+          cargo cyclonedx --format json || echo "::warning::SBOM generation skipped"

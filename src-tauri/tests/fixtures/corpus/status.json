@@ -1,0 +1,16 @@
+{
+  "schema_version": "2",
+  "sessions": 205,
+  "messages": 341187,
+  "messages_rejected": 1788,
+  "tool_events": 178003,
+  "history_prompts": 14089,
+  "source_files": 3921,
+  "last_run": {
+    "started_at": "2026-06-10T04:30:05",
+    "messages_ingested": 228,
+    "docs_rejected": 6,
+    "duration_s": 43.89934062957764,
+    "note": ""
+  }
+}

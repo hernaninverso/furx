@@ -1,0 +1,27 @@
+{
+  "name": "git-mcp",
+  "version": "1.0.0",
+  "description": "git-mcp (cyanheads/git-mcp-server, Apache-2.0) — local git operations (status/diff/log/commit/branch/worktree/tag, GPG/SSH signing) over the system git with validated argv. Local only (net:false), no env secrets (signing uses local keys). Runtime dep: npm i -g @cyanheads/git-mcp-server or npx (or set GIT_MCP_SERVER_BIN).",
+  "entrypoint": "run.sh",
+  "entrypoint_sha256": "2359a6a4340a9befecf9d3301314d206e3b20dba5f8d4b9455478c72777e2b3f",
+  "permissions": {
+    "net": [],
+    "fs_read": [
+      "$PROJECT_ROOT"
+    ],
+    "fs_write": [
+      "$PROJECT_ROOT"
+    ],
+    "shell": false,
+    "secrets": []
+  },
+  "signature": "oiPCK6siwXHH4SQcLTDGnKpztu2wWvOuhJWEYOkiQUNGcUkNb7Ta2Yt3nLUcrzqLGBPBvRIXgXeJFOur1DHTDA==",
+  "pubkey": "bgkQbOB0kcIRVzmmv7FVf8Bm2Cx/UPsDbT0VNcBrOp8=",
+  "mcp": {
+    "command": "run.sh",
+    "args": [
+      "$PROJECT_ROOT"
+    ],
+    "env": {}
+  }
+}

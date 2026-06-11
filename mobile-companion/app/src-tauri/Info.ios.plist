@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>Furx uses the microphone for voice commands. Audio is transcribed on-device; only the resulting text is sent to your paired desktop.</string>
+  <!-- 065 — pairing por QR: cámara para escanear el QR del desktop (tauri-plugin-barcode-scanner). -->
+  <key>NSCameraUsageDescription</key>
+  <string>Furx uses the camera to scan the pairing QR code shown on your desktop.</string>
+  <!-- 065 — red local: el companion conecta directo al bridge del desktop por loopback/LAN/Tailscale. -->
+  <key>NSLocalNetworkUsageDescription</key>
+  <string>Furx connects directly to your paired desktop over your private local or Tailscale network.</string>
+  <!-- 065 — ATS: el bridge es HTTP/WS plaintext sobre red privada (loopback/Tailscale WireGuard, MC-2).
+       NSAllowsLocalNetworking permite las conexiones plaintext a la red local SIN abrir arbitrary loads. -->
+  <key>NSAppTransportSecurity</key>
+  <dict>
+    <key>NSAllowsLocalNetworking</key>
+    <true/>
+  </dict>
+  <key>NSSpeechRecognitionUsageDescription</key>
+  <string>Furx transcribes your voice on-device to send text commands to your paired desktop. Audio never leaves your phone.</string>
+  <key>NSSupportsLiveActivities</key>
+  <true/>
+  <!-- App uses no non-exempt encryption (only standard HTTPS/TLS). Pre-answers the
+       App Store export-compliance question so TestFlight builds are distributable
+       immediately instead of stuck on "Missing Compliance". -->
+  <key>ITSAppUsesNonExemptEncryption</key>
+  <false/>
+</dict>
+</plist>

@@ -1,0 +1,25 @@
+{
+  "name": "codanna",
+  "version": "1.0.0",
+  "description": "codanna (bartolli/codanna, Apache-2.0) — local code-intelligence MCP server: call-graph, find-callers, semantic code search over the repo. Offline, no network, no secrets. Runtime dep: cargo install codanna (or set CODANNA_BIN).",
+  "entrypoint": "run.sh",
+  "entrypoint_sha256": "9af0169dcc43b55047f8ddbb4280689726444ef4994f0182201621cf991cbb5d",
+  "permissions": {
+    "net": [],
+    "fs_read": [
+      "$PROJECT_ROOT"
+    ],
+    "fs_write": [],
+    "shell": false,
+    "secrets": []
+  },
+  "signature": "+pAjJUB3m2Gkq+J4905KijDYpts+raErSD9DSS3h1pru2FbuREe8YkVanv4bSDX+xz+gaV6zbL8xfZp3IxRWBg==",
+  "pubkey": "bgkQbOB0kcIRVzmmv7FVf8Bm2Cx/UPsDbT0VNcBrOp8=",
+  "mcp": {
+    "command": "run.sh",
+    "args": [
+      "$PROJECT_ROOT"
+    ],
+    "env": {}
+  }
+}

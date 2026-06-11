@@ -1,0 +1,18 @@
+{
+  "name": "dir-tree",
+  "version": "1.0.0",
+  "description": "Árbol del directorio (2 niveles).",
+  "entrypoint": "run.sh",
+  "entrypoint_sha256": "03028ff7e600282320afedcd0d714faa793934a7af5f49a97e5d1185348f0107",
+  "permissions": {
+    "net": [],
+    "fs_read": [
+      "."
+    ],
+    "fs_write": [],
+    "shell": false,
+    "secrets": []
+  },
+  "signature": "FlkO7nr9YpJ6cB4lTIM//6NL565mTz+hnx0wrqbtkPFLY1cZlKEPTgBquXl+EuQgzoSzpaRXKPILjtc1DVLiCQ==",
+  "pubkey": "bgkQbOB0kcIRVzmmv7FVf8Bm2Cx/UPsDbT0VNcBrOp8="
+}

@@ -1,0 +1,65 @@
+# Static landing page CI + Cloudflare Pages deploy.
+# Default subdomain (no DNS required): furx-site.pages.dev
+# Once DNS is configured for furx.cloud, add a CNAME in the Pages dashboard.
+
+name: landing
+
+on:
+  push:
+    branches: [main]
+    paths: ["landing/**", ".github/workflows/landing.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  build-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - name: HTML5 validity (tidy)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y tidy
+          # tidy exit codes: 0=clean, 1=warnings, 2=errors. Codex audit MED:
+          # original `|| true` masked real HTML parse errors. Now: warnings
+          # acceptable, errors fail the job.
+          set +e
+          tidy -q -e landing/index.html
+          code=$?
+          set -e
+          if [ "$code" -ge 2 ]; then
+            echo "❌ tidy reported HTML errors (exit $code)" >&2
+            exit 1
+          fi
+          echo "✓ landing/index.html valid (tidy exit $code)"
+      - name: Check no secrets leaked
+        run: |
+          set -euo pipefail
+          # Council security must-fix: landing shouldn't ship real bearer / sk- / etc.
+          if grep -rEn "Bearer [A-Za-z0-9._-]{16,}|sk-[A-Za-z0-9_-]{20,}|cfut_[A-Za-z0-9._-]{16,}|AKIA[0-9A-Z]{12,}" landing/; then
+            echo "❌ secret pattern in landing/ — aborting" >&2
+            exit 1
+          fi
+          echo "✓ no secrets in landing/"
+      - name: Upload artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: landing-static
+          path: landing/
+
+  deploy-cloudflare-pages:
+    needs: build-and-validate
+    runs-on: ubuntu-latest
+    # Deploy only when the secret is present (real-prod has it; forks/preview don't).
+    if: ${{ vars.HAS_CF_PAGES == 'true' }}
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy landing --project-name=furx-site --branch=master

@@ -1,0 +1,18 @@
+{
+  "name": "git-status",
+  "version": "1.0.0",
+  "description": "Estado del repo (git status -s, solo lectura).",
+  "entrypoint": "run.sh",
+  "entrypoint_sha256": "4f8e842bc45ee3ae5338cc89a06ec0f1a60fc46cb907e01fe9733e05463d21e4",
+  "permissions": {
+    "net": [],
+    "fs_read": [
+      "."
+    ],
+    "fs_write": [],
+    "shell": false,
+    "secrets": []
+  },
+  "signature": "gj6gei1dyW489Zeq2NZYewvm9nYsalFw26M/s5tc1ykvJ8Obj7xmpm241GBKkDIQaTP5KUV7Shv+2sLQiW4UAQ==",
+  "pubkey": "bgkQbOB0kcIRVzmmv7FVf8Bm2Cx/UPsDbT0VNcBrOp8="
+}

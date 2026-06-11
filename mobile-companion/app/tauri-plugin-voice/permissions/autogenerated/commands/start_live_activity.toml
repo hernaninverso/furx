@@ -1,0 +1,13 @@
+# Automatically generated - DO NOT EDIT!
+
+"$schema" = "../../schemas/schema.json"
+
+[[permission]]
+identifier = "allow-start-live-activity"
+description = "Enables the start_live_activity command without any pre-configured scope."
+commands.allow = ["start_live_activity"]
+
+[[permission]]
+identifier = "deny-start-live-activity"
+description = "Denies the start_live_activity command without any pre-configured scope."
+commands.deny = ["start_live_activity"]

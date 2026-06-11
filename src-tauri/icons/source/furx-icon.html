@@ -1,0 +1,38 @@
+<!doctype html><html><head><meta charset="utf-8">
+<style>
+  /* Ícono de la app Furx — F wonky italic coral sobre ink oscuro (= la marca de adentro, .hex en
+     web/src/styles.css). Fuente VENDOREADA local (Fraunces variable italic con eje WONK) → regenerable
+     OFFLINE y determinista (sin depender de Google Fonts, que es mutable y caería a Georgia).
+     Fraunces © The Fraunces Project Authors, SIL Open Font License 1.1 — ver ./Fraunces-OFL.txt. */
+  @font-face{
+    font-family:'Fraunces';
+    src:url('./Fraunces-Italic.ttf') format('truetype');
+    font-style:italic;
+    font-weight:400 700;
+    font-display:block;            /* esperar la fuente real, nunca renderizar con fallback */
+  }
+  html,body{margin:0;padding:0;}
+  #icon{ width:1024px;height:1024px; background:#16130f; display:grid;place-items:center; overflow:hidden; }
+  #icon .f{
+    font-family:'Fraunces',Georgia,serif;
+    font-style:italic;
+    font-weight:600;
+    /* MISMA estrategia que .hex: optical-sizing AUTO + WONK 1 + SOFT 0. NO hardcodeamos opsz (audit codex). */
+    font-optical-sizing:auto;
+    font-variation-settings:"WONK" 1,"SOFT" 0;
+    color:#FF5C35;                 /* = color de la F de .hex */
+    font-size:600px;
+    line-height:1;
+    transform:translate(14px,-6px);/* nudge óptico para centrar la itálica */
+  }
+</style></head>
+<body><div id="icon"><div class="f">F</div></div>
+<script>
+  // Determinismo de regeneración (audit codex): NO basta `fonts.ready` (resuelve aunque el TTF falle).
+  // Validar que la fuente vendoreada cargó de verdad; un pipeline debe ABORTAR si queda "error"
+  // (sino se capturaría la F en Georgia silenciosamente).
+  document.fonts.ready.then(function(){
+    var ok = document.fonts.check('italic 600 600px "Fraunces"');
+    document.body.setAttribute('data-fonts', ok ? 'ready' : 'error');
+  });
+</script></body></html>

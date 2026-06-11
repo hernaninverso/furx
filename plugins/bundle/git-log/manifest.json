@@ -1,0 +1,18 @@
+{
+  "name": "git-log",
+  "version": "1.0.0",
+  "description": "Show the last 10 commits (read-only, no network).",
+  "entrypoint": "run.sh",
+  "entrypoint_sha256": "cf47e12ab1376c343c40bf8c3d1b1f5f34e6fcd5ad4b559f46111756d20b52db",
+  "permissions": {
+    "net": [],
+    "fs_read": [
+      "."
+    ],
+    "fs_write": [],
+    "shell": false,
+    "secrets": []
+  },
+  "signature": "pX1lp08fCv+9SmFPerk/cdmloUsoj17UWaPMdqyr6ynQku6v1kRWJCqfoax7du4FAkcidd8sZAMJCEUg5cQ1Ag==",
+  "pubkey": "bgkQbOB0kcIRVzmmv7FVf8Bm2Cx/UPsDbT0VNcBrOp8="
+}

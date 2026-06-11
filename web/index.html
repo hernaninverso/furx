@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Furx</title>
+    <!-- Anti-FOUC: apply V3 theme class before first paint. Desktop defaults to
+         dark (terminal tool); stored choice or explicit light preference wins. -->
+    <script>
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('furx-theme'); } catch (e) {}
+        var dark = t ? t === 'dark'
+          : !(window.matchMedia && matchMedia('(prefers-color-scheme: light)').matches);
+        document.documentElement.classList.toggle('dark', !!dark);
+      })();
+    </script>
+    <!-- 016 US1 — Anti-FOUC de idioma: resolver el locale ANTES del bundle (sin flash de idioma),
+         mismo patrón que el tema. Stored choice > idioma del SO > 'en'. Expone __FURX_LOCALE__
+         para que web/src/lib/i18n.ts lo lea al inicializar; setea <html lang>. GUARDS try/catch. -->
+    <script>
+      (function () {
+        var SUPPORTED = ['es', 'en', 'pt', 'it', 'fr', 'de']; // 063 — debe seguir a LOCALES de i18n.ts
+        var loc = null;
+        try {
+          var stored = localStorage.getItem('furx.locale');
+          if (stored && SUPPORTED.indexOf(stored) >= 0) loc = stored;
+        } catch (e) {}
+        if (!loc) {
+          try {
+            var nav = (navigator.language || '').slice(0, 2);
+            if (SUPPORTED.indexOf(nav) >= 0) loc = nav;
+          } catch (e) {}
+        }
+        if (!loc) loc = 'en';
+        try { window.__FURX_LOCALE__ = loc; } catch (e) {}
+        try { document.documentElement.lang = loc; } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./src/main.tsx"></script>
+  </body>
+</html>

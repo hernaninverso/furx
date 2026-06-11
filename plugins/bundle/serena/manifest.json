@@ -1,0 +1,25 @@
+{
+  "name": "serena",
+  "version": "1.0.0",
+  "description": "Serena (oraios/serena, MIT) — semantic coding toolkit over LSP as a signed MCP server: symbol-level find/edit (find_symbol, replace_symbol_body). Read-only over the repo, no network. Runtime dep: `uv tool install serena-agent` (or set SERENA_BIN).",
+  "entrypoint": "run.sh",
+  "entrypoint_sha256": "b0a656d7ff5be60442a758520a59e6524975a16a7437d3e4d23b5e67b347b482",
+  "permissions": {
+    "net": [],
+    "fs_read": [
+      "$PROJECT_ROOT"
+    ],
+    "fs_write": [],
+    "shell": false,
+    "secrets": []
+  },
+  "signature": "FeJJRP7IC52QAKyJYff2oY1nwy9LbFS2ffztxlJxfelraJzaFi52v4pGWit1qvbHqPtzPp1LFA5Vva0UDEkpCA==",
+  "pubkey": "bgkQbOB0kcIRVzmmv7FVf8Bm2Cx/UPsDbT0VNcBrOp8=",
+  "mcp": {
+    "command": "run.sh",
+    "args": [
+      "$PROJECT_ROOT"
+    ],
+    "env": {}
+  }
+}

@@ -1,0 +1,23 @@
+/* TEAM */
+  Publisher: INVERSO HUB S.R.L.
+  Contact: hello@furx.cloud
+  GitHub: https://github.com/hernaninverso/furx
+  From: Buenos Aires, Argentina
+
+/* COLOPHON */
+  Made with: Rust, Tauri, React, Next.js, Tailwind, SQLite, Cloudflare Pages
+  Tested on: macOS 14+, Ubuntu 22.04+, Fedora 40+, Windows 10/11
+  Audit log integrity: SQLite append-only via DDL triggers
+  Council Mode: parallel dispatch across BYOK provider keys
+
+/* THANKS */
+  Tauri team for making cross-platform native apps tractable
+  Anthropic, OpenAI, Google, Cerebras, Groq, Mistral for shipping APIs we can BYOK
+  OpenRouter for being the easiest one-key on-ramp
+  Ollama, LM Studio, llama.cpp, vLLM for making local inference real
+
+/* SITE */
+  Stack: Next.js 15 + Tailwind 4 + Geist + JetBrains Mono
+  Hosting: Cloudflare Pages
+  Static export, no server-side rendering at request time
+  Tokens at /design-system/tokens.css

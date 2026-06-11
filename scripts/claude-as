@@ -1,0 +1,67 @@
+#!/bin/bash
+# claude-as — launch `claude` with OAuth token from macOS Keychain
+# Usage: claude-as <slug> [claude-args...]
+#   Slug "A" -> reads Keychain service "claude-max-A"
+#   Slug "B" -> reads Keychain service "claude-max-B"
+#   Slug "default" -> no token override (subscription OAuth from Keychain default flow)
+#
+# Honors:
+#   $CLAUDE_AS_CONFIG_DIR — if set, also exports CLAUDE_CONFIG_DIR per-slug
+#                          for fully isolated settings/history.
+
+set -euo pipefail
+
+SLUG="${1:?usage: claude-as <slug> [claude-args...]}"
+shift
+
+# Strict allowlist on slug — used to compose paths and Keychain service names.
+case "$SLUG" in
+  [A-Za-z0-9_-]|[A-Za-z0-9_-][A-Za-z0-9_-]|[A-Za-z0-9_-][A-Za-z0-9_-][A-Za-z0-9_-]|[A-Za-z0-9_-][A-Za-z0-9_-]*[A-Za-z0-9_-]) ;;
+  *) echo "ERROR: invalid slug '$SLUG' (allowed: [A-Za-z0-9_-]+)" >&2; exit 2 ;;
+esac
+
+# Furx F1 — auto-load per-pane bootstrap if present.
+# Guards (V1 security + V5 QA): file must exist, be a regular file (no symlink),
+# not be world-writable, and not exceed 256 KiB (avoid ARG_MAX blow-up).
+BOOTSTRAP="$HOME/.furx/contexts/${SLUG}-bootstrap.md"
+PREFIX_ARGS=()
+if [ -e "$BOOTSTRAP" ]; then
+  if [ -L "$BOOTSTRAP" ]; then
+    echo "WARN: $BOOTSTRAP is a symlink — refusing to attach (security)" >&2
+  elif [ ! -f "$BOOTSTRAP" ]; then
+    echo "WARN: $BOOTSTRAP exists but is not a regular file — skipping" >&2
+  else
+    # Reject world-writable.
+    if [ "$(stat -f '%Mp%Lp' "$BOOTSTRAP" 2>/dev/null || stat -c '%a' "$BOOTSTRAP" 2>/dev/null)" = "00666" ] || \
+       [ "$(/usr/bin/find "$BOOTSTRAP" -perm -o+w 2>/dev/null)" = "$BOOTSTRAP" ]; then
+      echo "WARN: $BOOTSTRAP is world-writable — refusing to attach (security)" >&2
+    else
+      SIZE=$(/usr/bin/stat -f '%z' "$BOOTSTRAP" 2>/dev/null || /usr/bin/stat -c '%s' "$BOOTSTRAP" 2>/dev/null || echo 0)
+      if [ "$SIZE" -gt 262144 ]; then
+        echo "WARN: $BOOTSTRAP > 256 KiB ($SIZE bytes) — skipping (ARG_MAX guard)" >&2
+      else
+        PREFIX_ARGS=(--append-system-prompt "@$BOOTSTRAP")
+      fi
+    fi
+  fi
+fi
+
+if [ "$SLUG" = "default" ]; then
+  exec claude "${PREFIX_ARGS[@]}" "$@"
+fi
+
+SERVICE="claude-max-$SLUG"
+TOKEN=$(security find-generic-password -a "$USER" -s "$SERVICE" -w 2>/dev/null) || {
+  echo "ERROR: no Keychain entry '$SERVICE' for user $USER" >&2
+  echo "       run: ~/bin/setup-max-account.sh $SLUG" >&2
+  exit 1
+}
+
+if [ -n "${CLAUDE_AS_CONFIG_DIR:-}" ]; then
+  export CLAUDE_CONFIG_DIR="$CLAUDE_AS_CONFIG_DIR/$SLUG"
+  mkdir -p "$CLAUDE_CONFIG_DIR"
+fi
+
+export CLAUDE_CODE_OAUTH_TOKEN="$TOKEN"
+TOKEN=""  # best-effort wipe
+exec claude "${PREFIX_ARGS[@]}" "$@"

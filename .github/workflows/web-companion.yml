@@ -1,0 +1,46 @@
+# Web companion CI: lint + build + artifact. Council K 3/3 must-fix
+# (no CI workflow could mean prod-breaking PRs slip into master).
+
+name: web-companion
+
+on:
+  push:
+    branches: [main]
+    paths: ["web-companion/**", ".github/workflows/web-companion.yml"]
+  pull_request:
+    paths: ["web-companion/**"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web-companion
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "20"
+      # Audit Codex MED: npm cache requires a lockfile path that exists; this
+      # project doesn't commit one yet. Skip cache until package-lock.json
+      # lands so the action doesn't fail before install.
+      - name: Install deps
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci --no-audit --no-fund
+          else
+            npm install --no-audit --no-fund
+          fi
+      - name: TypeScript check
+        run: npx tsc --noEmit
+      - name: Build
+        run: npm run build
+      - name: Lint (best-effort — Next exits 1 on unused imports, etc.)
+        run: npm run lint || true
+      - name: Upload .next artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: web-companion-build
+          path: web-companion/.next/
+          retention-days: 14

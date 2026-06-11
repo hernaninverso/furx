@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Furx — Run any coding agent side-by-side. No proxy.</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="description" content="Run coding agents — Claude Code, Codex, Gemini CLI, Aider — side by side. Council Mode: one prompt, up to six models. Your keys never leave your machine. Apache-2.0.">
+<style>
+  :root {
+    --bg: #061018; --panel: #0d1820; --line: #1f3543;
+    --accent: #FF5C35; --accent-dim: rgba(255,92,53,.18);
+    --green: #6bd97a; --orange: #f4b860; --red: #ff6b6b;
+    --fg: #d6e6f0; --muted: #708796;
+  }
+  html, body { background: var(--bg); color: var(--fg); margin: 0; padding: 0;
+    font: 16px/1.65 -apple-system, "SF Pro Text", "Inter", sans-serif;
+    -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 60px 28px 100px; }
+  h1 { font-size: 56px; margin: 0 0 12px; font-weight: 800; letter-spacing: -1px; line-height: 1.05; }
+  h2 { font-size: 28px; margin: 60px 0 16px; color: #fff; }
+  h3 { font-size: 18px; margin: 22px 0 8px; color: var(--accent); }
+  p { line-height: 1.7; }
+  /* Marca canónica Furx: F serif itálica coral en cuadrado redondeado (= ícono de la app). */
+  .hex { display: inline-grid; place-items: center; width: 56px; height: 56px;
+         background: var(--panel); border: 2.5px solid var(--fg); border-radius: 11px;
+         margin-bottom: 14px; font: italic 600 38px Georgia, "Times New Roman", serif;
+         color: var(--accent); line-height: 1; padding-bottom: 3px; }
+  .hex::before { content: "F"; }
+  .lead { font-size: 22px; color: #b8d8e8; max-width: 720px; }
+  .pills { margin-top: 26px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .pill { display: inline-block; padding: 4px 12px; border-radius: 999px; font-size: 13px;
+          color: var(--accent); background: var(--accent-dim);
+          border: 1px solid rgba(255,92,53,.4); font-family: "SF Mono", monospace; }
+  .cta-row { display: flex; gap: 12px; margin-top: 30px; flex-wrap: wrap; }
+  .cta { display: inline-block; padding: 12px 24px; border-radius: 8px; font-weight: 700;
+         text-decoration: none; font-size: 15px; transition: transform 120ms; }
+  .cta:hover { transform: translateY(-1px); }
+  .cta.primary { background: var(--accent); color: #061018; }
+  .cta.secondary { background: var(--panel); color: var(--fg); border: 1px solid var(--line); }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 14px; }
+  @media (max-width: 880px) { .grid-3 { grid-template-columns: 1fr; } h1 { font-size: 38px; } }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+          padding: 18px 22px; }
+  .price-card { text-align: left; }
+  .price-card .tier { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+  .price-card .price { font-size: 32px; font-weight: 700; color: var(--accent); margin: 6px 0 4px;
+                       font-family: "SF Mono", monospace; }
+  .price-card .price-sub { font-size: 12px; color: var(--muted); }
+  .price-card ul { font-size: 13px; padding-left: 16px; margin: 12px 0 0; line-height: 1.7; }
+  .price-card.featured { border: 2px solid var(--accent); }
+  pre { background: #020608; border: 1px solid var(--line); border-radius: 8px;
+        padding: 16px 20px; font: 13px/1.5 "SF Mono", monospace; color: #b8d8e8;
+        overflow-x: auto; }
+  code { background: rgba(255,92,53,.08); border: 1px solid rgba(255,92,53,.3); border-radius: 4px;
+         padding: 1px 6px; font: 13px "SF Mono", monospace; color: var(--accent); }
+  .footer { color: var(--muted); font-size: 12px; margin-top: 80px; padding-top: 20px;
+            border-top: 1px solid var(--line); }
+  .footer a { color: var(--accent); }
+  .muted { color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="hex" aria-hidden="true"></div>
+  <h1>Furx</h1>
+  <p class="lead">
+    Run any coding agent side-by-side. No proxy. Furx runs real coding agents —
+    Claude Code, Codex, Gemini CLI, Aider, and any OpenAI-compatible endpoint — in a grid
+    of terminal panes, and <strong>Council Mode</strong> sends one prompt to up to
+    <strong>six models in parallel</strong> with a synthesized consensus.
+  </p>
+
+  <div class="pills">
+    <span class="pill">macOS · Linux · Windows</span>
+    <span class="pill">Apache-2.0 core</span>
+    <span class="pill">14-day Pro trial</span>
+    <span class="pill">append-only local audit log</span>
+    <span class="pill">BYOK · keys in the OS keychain</span>
+  </div>
+
+  <div class="cta-row">
+    <a class="cta primary" href="/download">Download Furx — free</a>
+    <a class="cta secondary" href="#pricing">See pricing</a>
+  </div>
+</header>
+
+<h2>Connect whatever you already have</h2>
+<p class="muted" style="max-width:780px;">
+  Pure BYOK across 15 providers: your keys live in your OS keychain and every call goes
+  straight from your machine to the provider — Furx is never in the request path. The
+  <strong>Furx Connect</strong> wizard offers five paths; mix and match freely.
+</p>
+
+<div class="grid-3">
+  <div class="card">
+    <h3>OpenRouter Quick Start</h3>
+    <p>One key, hundreds of models. Council Mode picks distinct model families from the catalog — Claude, GPT, Gemini, Qwen, DeepSeek, Llama — and fills all six voices. About <strong>30 seconds</strong> of onboarding.</p>
+  </div>
+  <div class="card">
+    <h3>Free tiers</h3>
+    <p>Separate free accounts, one key each: Cerebras · Groq · Mistral · SambaNova · Google Gemini AI Studio. Daily quotas vary per provider; Furx orchestrates whatever you connect. <strong>$0/mo</strong>.</p>
+  </div>
+  <div class="card">
+    <h3>Paid APIs, direct</h3>
+    <p>Anthropic, OpenAI, Gemini API — your own keys, your billing, your rate limits. Any OpenAI-compatible endpoint works too.</p>
+  </div>
+  <div class="card">
+    <h3>Local inference</h3>
+    <p>Auto-detects <strong>Ollama</strong>, LM Studio, llama.cpp, vLLM. With a local-only council, model inference never leaves your machine. <strong>$0 ongoing</strong>.</p>
+  </div>
+  <div class="card">
+    <h3>Gateways / LiteLLM</h3>
+    <p>Paste your org gateway URL. Centralized governance and spend tracking. Anything that speaks OpenAI-compatible JSON works.</p>
+  </div>
+  <div class="card">
+    <h3>Mix-and-match</h3>
+    <p>Combine all five paths. The council dispatches across whichever providers are healthy, with graceful degradation if one voice rate-limits.</p>
+  </div>
+</div>
+
+<h2>What each tier adds</h2>
+<p class="muted" style="max-width:780px;">
+  The free core ships everything that runs on your machine — all panes, all hotkeys,
+  Council Mode, the audit log, Memory Hub, BYOK. Paid tiers add hosted services.
+  No feature is ever removed from the free tier after being added.
+</p>
+
+<div class="grid-3" id="pricing">
+  <div class="card price-card">
+    <div class="tier">Free</div>
+    <div class="price">$0</div>
+    <div class="price-sub">Apache-2.0 · forever</div>
+    <ul>
+      <li><strong>Council Mode ⌘J</strong> — up to 6 models in parallel</li>
+      <li>Multi-pane PTY grid + broadcast ⌘B</li>
+      <li>BYOK — keys in the OS keychain</li>
+      <li>Append-only local audit log</li>
+      <li>Memory Hub (local, cross-CLI)</li>
+      <li>Command palette ⌘K + search ⌘P</li>
+      <li>Voice → text (whisper.cpp, local)</li>
+    </ul>
+  </div>
+
+  <div class="card price-card featured">
+    <div class="tier">Pro</div>
+    <div class="price">$12<span style="font-size:16px;color:var(--muted);">/mo</span></div>
+    <div class="price-sub">14-day trial · no card</div>
+    <ul>
+      <li>Cloud sync of <code>.mcp.json</code> + skills</li>
+      <li>Session replay scrubber</li>
+      <li>Cost-Router + cost meter with alerts, CSV export</li>
+      <li>Latency heatmap trends</li>
+      <li>Encrypted backups</li>
+      <li>Premium UI themes</li>
+    </ul>
+  </div>
+
+  <div class="card price-card">
+    <div class="tier">Team</div>
+    <div class="price">$30<span style="font-size:16px;color:var(--muted);">/seat/mo</span></div>
+    <div class="price-sub">5+ seats · annual billing available</div>
+    <ul>
+      <li>Everything in Pro</li>
+      <li>SSO / OIDC</li>
+      <li>Admin console + policy</li>
+      <li>Shared cost dashboard</li>
+      <li>Centralized audit log sync</li>
+      <li>Provider allow-listing</li>
+    </ul>
+  </div>
+</div>
+
+<div class="grid-3" style="margin-top:14px;">
+  <div class="card price-card">
+    <div class="tier">Enterprise · self-hosted</div>
+    <div class="price">$49<span style="font-size:16px;color:var(--muted);">/seat/mo</span></div>
+    <div class="price-sub">or $2.5k perpetual self-host</div>
+    <ul>
+      <li>Notarized self-host build</li>
+      <li>Data-residency (Argentina or EU)</li>
+      <li>Source-code escrow</li>
+      <li>White-label</li>
+      <li>Custom provider integration</li>
+      <li>Dedicated SLA</li>
+    </ul>
+  </div>
+
+  <div class="card price-card">
+    <div class="tier">Compliance Pack</div>
+    <div class="price">$199 <span style="font-size:14px;color:var(--muted);">one-time</span></div>
+    <div class="price-sub">add-on for Team / Enterprise</div>
+    <ul>
+      <li>GDPR / DPA template</li>
+      <li>Encrypted audit backup</li>
+      <li>Legal escrow audit log</li>
+      <li>Audit-ready evidence pack</li>
+      <li>Pre-audit checklist</li>
+    </ul>
+  </div>
+
+  <div class="card price-card">
+    <div class="tier">On the roadmap</div>
+    <div class="price">soon</div>
+    <div class="price-sub">in progress</div>
+    <ul>
+      <li>iOS companion (read-only, in scaffolding)</li>
+      <li>Web companion · audit replay</li>
+      <li>Skills sharing</li>
+    </ul>
+  </div>
+</div>
+
+<h2>How it feels</h2>
+
+<pre>$ open /Applications/Furx.app
+[wizard] Paste your OpenRouter key: sk-or-v1-…
+[wizard] ✓ Test passed · 142 ms
+[wizard] Done. Keys stored in the OS keychain.
+
+# later, in any pane:
+⌘J     Council Mode → one prompt, up to six models in parallel
+⌘B     Broadcast to multiple panes
+⌘K     Command palette · ⌘P search code + memories + git
+</pre>
+
+<h2 id="local">Local inference — privacy by default</h2>
+<p>
+  Furx detects <strong>Ollama</strong> on <code>localhost:11434</code> and lists the loaded
+  models. Connect it in one click. With the <code>local</code> council preset, model
+  inference never leaves your machine — useful for legal, regtech, and finance teams,
+  or for anyone who doesn't want tokens leaving their laptop.
+</p>
+
+<pre>$ ollama pull qwen2.5-coder:32b
+$ ollama pull deepseek-r1:14b
+$ ollama pull llama3.3:70b
+# then in Furx → Settings → Connect → Local tab → 3 models ✓
+# Council Mode preset "local" = 3 parallel local voices</pre>
+
+<div class="footer">
+  © 2026 INVERSO HUB S.R.L. · <a href="https://github.com/hernaninverso/furx">GitHub</a>
+  · <a href="/privacy">Privacy</a>
+  · <a href="/terms">Terms</a>
+  · Built with <a href="https://tauri.app">Tauri 2</a>
+  · Payments processed by Paddle (Merchant of Record)
+  · Your keys never leave your machine. No proxy. An audit trail the agent can't rewrite.
+    The core is Apache-2.0 — read the source.
+</div>
+
+</div>
+</body>
+</html>

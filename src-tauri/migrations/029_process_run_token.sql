@@ -1,0 +1,16 @@
+-- 015-frontend-reform-kernel · US5 · T014 (audit final, codex+gemini HIGH).
+--
+-- `run_token`: id monotónico de la GENERACIÓN de un proceso bajo un `process_id` (= pane_id).
+-- Cierra la race "wait-thread hijack" del respawn del mismo pane_id: cuando un PTY sale y su
+-- wait-thread va a marcar la fila terminal, un respawn del MISMO pane_id puede haber reseteado
+-- la fila a `running` (nueva generación) en la ventana entre que el wait-thread suelta el lock
+-- de sesiones y ejecuta `finish`. Sin un token, `finish` (UPDATE ... WHERE status='running')
+-- marcaría `done` la fila del run NUEVO → orphan + desync SSOT.
+--
+-- Con el token, `finish` se scopea `AND run_token = ?`: el wait-thread viejo (token N) NO toca
+-- la fila del run nuevo (token N+1). `register` (UPSERT) setea un token fresco al reiniciar una
+-- fila terminal a `running`, y lo conserva en el no-op de un re-register de una fila viva.
+--
+-- Nullable: las filas legacy (pre-029) quedan con run_token NULL; `finish(.., None)` las matchea
+-- por compatibilidad (sin token = comportamiento viejo, sólo por status).
+ALTER TABLE process_registry ADD COLUMN run_token INTEGER;

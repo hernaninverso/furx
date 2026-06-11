@@ -1,0 +1,18 @@
+{
+  "name": "ripgrep-search",
+  "version": "1.0.0",
+  "description": "Buscar un patrón en el directorio (ripgrep/grep, solo lectura, sin red).",
+  "entrypoint": "run.sh",
+  "entrypoint_sha256": "73a93402e4c146f0f57f7fc7c683b9384a8f2ee0fc12c4eab555e16ff962c32b",
+  "permissions": {
+    "net": [],
+    "fs_read": [
+      "."
+    ],
+    "fs_write": [],
+    "shell": false,
+    "secrets": []
+  },
+  "signature": "YSaR/5gm8qIgRmPznt2Dg5HicyXCuHJJelXLq2GwAr709sU980e+bvIf7vgMAUHVDUfSPgT/ywcqKQsIWbLyBw==",
+  "pubkey": "bgkQbOB0kcIRVzmmv7FVf8Bm2Cx/UPsDbT0VNcBrOp8="
+}

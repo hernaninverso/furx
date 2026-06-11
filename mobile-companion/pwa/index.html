@@ -1,0 +1,923 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#f3efe6" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#16130f" media="(prefers-color-scheme: dark)" />
+<link rel="manifest" href="manifest.webmanifest" />
+<title>Furx Mobile</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..700,0..100,0..1;1,9..144,400..600,0..100,0..1&family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  /* V3 "atelier" — warm paper (light) / warm ink (dark) · Fraunces · Hanken · Space Mono.
+     Follows the system theme; same tokens as dashboard/desktop/landing. */
+  :root {
+    --bg: #f3efe6; --ink: #1c1814; --accent: #bf3f18;
+    --muted: #635849; --line: #d8d1bf; --card: #faf7f0;
+    --busy: #9a6011; --ready: #bf3f18; --error: #a8412c; --idle: #928876;
+    --sans: "Hanken Grotesk", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --mono: "Space Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    --display: "Fraunces", Georgia, serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16130f; --ink: #efe7d8; --accent: #ff8a6e;
+      --muted: #a0967f; --line: #322b21; --card: #1e1a15;
+      --busy: #e8b765; --ready: #ff8a6e; --error: #f0816f; --idle: #79705f;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans);
+    -webkit-font-smoothing: antialiased; padding: env(safe-area-inset-top) 0 0;
+  }
+  header {
+    display: flex; align-items: center; gap: 10px; padding: 14px 16px;
+    border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--bg); z-index: 5;
+  }
+  .mark {
+    /* 065 — marca Furx: F CORAL sobre ink, esquina redondeada (igual al ícono de la app y al chip de
+       marca del desktop). Antes era una F oscura en un cuadro claro con borde (off-brand). */
+    width: 30px; height: 30px; border-radius: 8px; background: #16130f; color: #FF5C35;
+    display: grid; place-items: center; font-family: var(--display);
+    font-style: italic; font-weight: 600; font-size: 19px; line-height: 1;
+    font-variation-settings: "WONK" 1, "SOFT" 0;
+  }
+  /* 065 — escaneo nativo windowed: la webview se vuelve transparente y la cámara queda DETRÁS; ocultamos
+     toda la UI menos el botón Cancelar. */
+  body.scanning { background: transparent !important; }
+  body.scanning > *:not(#scan-cancel) { visibility: hidden !important; }
+  #scan-cancel {
+    position: fixed; left: 50%; bottom: 44px; transform: translateX(-50%); z-index: 99999;
+    padding: 13px 30px; border-radius: 12px; border: none; background: #16130f; color: #efe7d8;
+    font-size: 16px; font-weight: 600; box-shadow: 0 4px 16px rgba(0,0,0,.4);
+  }
+  h1 { font-size: 18px; margin: 0; font-weight: 600; letter-spacing: -0.01em; font-family: var(--display); font-variation-settings: "opsz" 40, "WONK" 1; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--idle); margin-left: auto; }
+  .dot.on { background: var(--ready); }
+  .dot.off { background: var(--error); }
+  main { padding: 16px; max-width: 720px; margin: 0 auto; }
+  label { display: block; font-size: 12px; color: var(--muted); margin: 0 0 5px; }
+  input, textarea, select, button {
+    font-family: var(--sans); font-size: 15px; width: 100%; padding: 11px 12px;
+    border: 1px solid var(--line); border-radius: 9px; background: var(--card); color: var(--ink);
+  }
+  input[type=text] { font-family: var(--mono); letter-spacing: 0.02em; }
+  button {
+    background: var(--accent); color: var(--bg); border: none; font-weight: 600; cursor: pointer;
+  }
+  button.secondary { background: var(--card); color: var(--accent); border: 1px solid var(--accent); }
+  button:disabled { opacity: 0.45; }
+  .row { display: flex; gap: 8px; }
+  .row > * { flex: 1; }
+  .field { margin-bottom: 14px; }
+  .hidden { display: none !important; }
+  .panes { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 14px; }
+  .pane-chip {
+    flex: none; padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px;
+    background: var(--card); font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px;
+  }
+  .pane-chip.active { border-color: var(--accent); color: var(--accent); }
+  .pane-chip .st { width: 7px; height: 7px; border-radius: 50%; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--idle);
+    border-radius: 9px; padding: 10px 12px; margin: 0 0 8px;
+  }
+  .card.sev-warning { border-left-color: var(--busy); }
+  .card.sev-critical { border-left-color: var(--error); }
+  .card .ct { font-weight: 600; font-size: 14px; }
+  .card .cmeta { font-size: 11px; color: var(--muted); font-family: var(--mono); margin: 2px 0 8px; }
+  .card .acts { display: flex; gap: 6px; }
+  .card .acts button { flex: 1; padding: 8px; font-size: 13px; }
+  .card .acts .rej { background: var(--card); color: var(--error); border: 1px solid var(--error); }
+  .card .acts .snz { background: var(--card); color: var(--muted); border: 1px solid var(--line); }
+  .st-busy { background: var(--busy); } .st-ready { background: var(--ready); }
+  .st-error { background: var(--error); } .st-idle { background: var(--idle); }
+  pre#view {
+    font-family: var(--mono); font-size: 12.5px; line-height: 1.45; background: #16130f; color: #e8e8e3;
+    padding: 12px; border-radius: 10px; min-height: 240px; max-height: 52vh; overflow: auto;
+    white-space: pre-wrap; word-break: break-word; margin: 0 0 12px;
+  }
+  .cmd { display: flex; gap: 8px; align-items: flex-end; }
+  .cmd textarea { flex: 1; resize: none; font-family: var(--mono); min-height: 46px; }
+  .cmd button { flex: none; width: auto; padding: 11px 16px; }
+  .toast {
+    position: fixed; left: 50%; transform: translateX(-50%); bottom: 22px; background: var(--card); border: 1px solid var(--line);
+    color: var(--ink); padding: 10px 16px; border-radius: 999px; font-size: 13px; opacity: 0; transition: opacity .2s;
+    pointer-events: none; max-width: 90vw;
+  }
+  .toast.show { opacity: 0.96; }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .mic { flex: none; width: 46px; padding: 0; font-size: 18px; }
+  .mic.rec { background: var(--error); }
+
+  /* 017 — bottom-nav reform. Sections live above the fixed bottom-nav; the nav
+     itself is a fixed bar with ≥44px tabs + iOS safe-area inset. */
+  body.navmode main { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+  #bottomnav {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 6;
+    display: flex; gap: 0; background: var(--card); border-top: 1px solid var(--line);
+    padding: 4px 0 calc(4px + env(safe-area-inset-bottom));
+  }
+  .navtab {
+    flex: 1; min-height: 56px; min-width: 44px; width: auto; padding: 6px 4px;
+    background: none; border: none; color: var(--muted); border-radius: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 2px; cursor: pointer; font-weight: 500;
+  }
+  .navtab.active { color: var(--accent); }
+  .navtab-ico { font-size: 19px; line-height: 1; }
+  .navtab-lbl { font-size: 11px; letter-spacing: 0.01em; }
+  .navsection { margin: 0 0 8px; }
+  .navitem {
+    display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 8px 4px;
+    border-bottom: 1px solid var(--line); font-size: 14px;
+  }
+  .navitem-ico { width: 20px; text-align: center; color: var(--muted); }
+  /* Command surface */
+  .cmdsearch { margin-bottom: 10px; }
+  .cmdrow {
+    display: flex; align-items: center; gap: 8px; width: 100%; min-height: 48px;
+    padding: 9px 12px; margin: 0 0 6px; text-align: left;
+    background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 9px;
+    font-weight: 500; cursor: pointer;
+  }
+  .cmdrow-main { flex: 1; display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+  .cmdrow-lbl { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cmdrow-meta { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+  .cmdrow-badge {
+    flex: none; font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em;
+    padding: 3px 7px; border-radius: 999px; background: var(--error); color: var(--bg); font-weight: 700;
+  }
+  .cmdmore { margin-top: 4px; min-height: 44px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="mark">F</div>
+  <h1>Furx Mobile</h1>
+  <div id="dot" class="dot" title="disconnected"></div>
+</header>
+
+<main>
+  <!-- Pairing -->
+  <section id="pair">
+    <!-- 065 — pareo por QR (método primario): escaneá el QR de Furx (Ajustes → Móvil) o ingresá el
+         código de 8 caracteres. El secreto viaja una sola vez tras canjear un token efímero. -->
+    <div class="field" id="pair-qr">
+      <label>Vincular con Furx</label>
+      <button id="scan-qr" type="button">📷 Escanear QR</button>
+      <video id="scan-video" playsinline class="hidden" style="width:100%;border-radius:10px;margin-top:8px;background:#000"></video>
+      <div class="hint">Abrí Furx en la compu → Ajustes → Móvil → “Vincular dispositivo móvil (QR)”.</div>
+      <!-- 065 — estado persistente del pareo (no un toast fugaz): muestra el paso/error real para diagnosticar. -->
+      <div id="pair-status" style="margin-top:8px;display:none;padding:9px 11px;border-radius:8px;font-size:13px;line-height:1.35;white-space:pre-line"></div>
+    </div>
+    <div class="field">
+      <label>…o ingresá el código de 8 caracteres</label>
+      <input id="shortcode" type="text" inputmode="latin" maxlength="8" placeholder="p. ej. 7K2M9PQR" autocomplete="off" autocapitalize="characters" spellcheck="false" style="text-transform:uppercase;letter-spacing:3px" />
+      <button id="pair-code" type="button">Vincular con código</button>
+    </div>
+    <details>
+      <summary class="hint" style="cursor:pointer">Pareo manual (host + secret)</summary>
+      <div class="field" style="margin-top:8px">
+        <label>Desktop address (host:port)</label>
+        <input id="host" type="text" placeholder="127.0.0.1:43118" autocomplete="off" autocapitalize="off" spellcheck="false" />
+      </div>
+      <div class="field">
+        <label>Shared secret (64-hex, from Settings → Mobile)</label>
+        <input id="secret" type="text" placeholder="paste secret" autocomplete="off" autocapitalize="off" spellcheck="false" />
+        <div class="hint">Stored only on this device. The desktop never sends it back.</div>
+      </div>
+      <button id="connect">Pair &amp; connect</button>
+    </details>
+  </section>
+
+  <!-- Session -->
+  <section id="session" class="hidden">
+    <!-- "Trabajo" / work section: panes + approvals + command box (the original
+         flat view, now the first bottom-nav section). Kept intact so the wrapper
+         iOS build and existing pairing/pane flow don't regress (FR-018). -->
+    <div id="sec-work">
+      <!-- ARRIBA: panes + leer + hablar (lo principal). ABAJO: notificaciones. (pedido del usuario) -->
+      <label>Panes</label>
+      <div id="panes" class="panes"></div>
+      <pre id="view">No pane selected.</pre>
+      <div class="cmd">
+        <button id="mic" class="mic secondary" title="Voice">🎤</button>
+        <textarea id="cmd" placeholder="Type a command for the focused pane…" rows="1"></textarea>
+        <button id="send">Send</button>
+      </div>
+      <div class="hint" id="cmdhint">Sends to the selected pane. Press the mic to dictate.</div>
+      <!-- ABAJO: notificaciones (aprobaciones pendientes / cards). -->
+      <div id="cards-wrap" class="hidden" style="margin-top:18px">
+        <label>Notificaciones</label>
+        <div id="cards"></div>
+      </div>
+    </div>
+
+    <!-- 017 — data-driven nav sections (rendered from the NavSpec by nav.js). The
+         active tab's section is shown; the rest are hidden. The "work" domain maps
+         to #sec-work above; other domains list their items here. -->
+    <div id="nav-sections"></div>
+
+    <!-- Commands surface (CommandCatalog from the bridge). Shown under the nav. -->
+    <div id="sec-commands" class="hidden">
+      <label>Commands</label>
+      <input id="cmdsearch" class="cmdsearch" type="text" placeholder="Search commands…"
+             autocomplete="off" autocapitalize="off" spellcheck="false" />
+      <div id="cmdlist"></div>
+    </div>
+
+    <div class="field" style="margin-top:18px">
+      <button id="disconnect" class="secondary">Disconnect</button>
+    </div>
+  </section>
+</main>
+
+<!-- 017 — fixed bottom-nav (data-driven from NavSpec). Hidden until a NavSpec
+     arrives; if the protocol mismatches or no spec is set, the flat view stays. -->
+<nav id="bottomnav" class="hidden"></nav>
+
+<!-- 065 — botón Cancelar del escáner nativo (visible solo durante el scan; queda sobre la cámara). -->
+<button id="scan-cancel" class="hidden" type="button">Cancelar</button>
+
+<div id="toast" class="toast"></div>
+
+<script type="module">
+import { signedFrame, verifyOutbound } from "./furx-sign.js";
+import { MOBILE_PROTOCOL_VERSION } from "./protocol.js";
+import { renderNav, selectDomain, activeDomainId, __reset as navReset } from "./nav.js";
+import { setCatalog, renderCommands, __reset as cmdReset } from "./commands.js";
+import { applyEvent, onAppEvent, resetSeq } from "./events.js";
+
+const $ = (id) => document.getElementById(id);
+const dot = $("dot");
+let transport = null, secret = "", subscribed = null, panes = [], cards = [];
+let liveActivityPane = null;  // pane id with an active native Live Activity
+let navReady = false;         // 017: a valid NavSpec arrived → bottom-nav mode on
+let protocolOk = true;        // 017 [MF-1]: sticky protocol-version gate. Set per hello_ack;
+                              // signed nav/catalog/event frames are IGNORED while false, so a
+                              // post-HelloAck push can't re-enable a degraded (incompatible) UI.
+
+// Running inside the native Tauri shell? Then the webview is a secure context
+// that blocks plaintext ws:// (mixed content), so transport goes through Rust
+// over IPC (see app/src-tauri/src/lib.rs). In a plain browser we use WebSocket.
+const IN_TAURI = !!(window.__TAURI__ && window.__TAURI__.core);
+
+// Browser transport: a raw WebSocket (works over insecure http origins, where
+// the pure-JS HMAC also works — no crypto.subtle needed).
+function makeBrowserTransport() {
+  let sock = null, h = {};
+  return {
+    open(url, handlers) {
+      h = handlers;
+      sock = new WebSocket(url);
+      sock.onopen = () => h.onOpen && h.onOpen();
+      sock.onmessage = (ev) => h.onMessage(JSON.parse(ev.data));
+      sock.onclose = () => h.onClose && h.onClose();
+      sock.onerror = () => h.onError && h.onError("ws error");
+    },
+    send(obj) { if (sock && sock.readyState === 1) sock.send(JSON.stringify(obj)); },
+    close() { if (sock) sock.close(); },
+  };
+}
+
+// Native transport: the Rust side owns the socket; we drive it over IPC.
+function makeTauriTransport() {
+  const { invoke } = window.__TAURI__.core;
+  const { listen } = window.__TAURI__.event;
+  let h = {}, unMsg = null, unClose = null, gen = 0;
+  return {
+    async open(url, handlers) {
+      h = handlers;
+      unMsg = await listen("furx:ws-message", (e) => {
+        if (e.payload.gen === gen) h.onMessage(JSON.parse(e.payload.data));
+      });
+      unClose = await listen("furx:ws-closed", (e) => {
+        if (e.payload === gen) h.onClose && h.onClose();
+      });
+      try {
+        gen = await invoke("ws_connect", { url });
+        h.onOpen && h.onOpen();
+      } catch (err) {
+        h.onError && h.onError(String(err));
+      }
+    },
+    send(obj) { invoke("ws_send", { text: JSON.stringify(obj) }).catch(() => {}); },
+    close() {
+      invoke("ws_disconnect").catch(() => {});
+      if (unMsg) unMsg(); if (unClose) unClose();
+      h.onClose && h.onClose();
+    },
+  };
+}
+
+function toast(msg) {
+  const t = $("toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove("show"), 2600);
+}
+function setConn(state) {
+  dot.className = "dot" + (state === "on" ? " on" : state === "off" ? " off" : "");
+  dot.title = state === "on" ? "connected" : "disconnected";
+}
+// In-app toast + OS notification. Native: tauri-plugin-notification via IPC.
+// Browser: Web Notifications API. Toast always shows (best-effort OS layer).
+function notify(m) {
+  toast(`${m.title}${m.body ? " · " + m.body : ""}`);
+  if (IN_TAURI) {
+    window.__TAURI__.core
+      .invoke("plugin:notification|notify", { options: { title: m.title || "Furx", body: m.body || "" } })
+      .catch(() => {});
+    return;
+  }
+  if (!("Notification" in window) || Notification.permission !== "granted") return;
+  try {
+    new Notification(m.title || "Furx", { body: m.body || "", tag: m.correlation_id || m.kind, icon: "icon.svg" });
+  } catch (_) { /* some browsers require a SW for notifications; toast already shown */ }
+}
+
+// Pairing secret: native → iOS Keychain (Rust keyring); browser → localStorage.
+async function loadSecret() {
+  if (IN_TAURI) {
+    try { return (await window.__TAURI__.core.invoke("secret_load")) || ""; } catch { return ""; }
+  }
+  return localStorage.getItem("furx.secret") || "";
+}
+async function saveSecret(s) {
+  if (IN_TAURI) {
+    try { await window.__TAURI__.core.invoke("secret_store", { value: s }); } catch { /* keep going; in-memory still works */ }
+  } else {
+    localStorage.setItem("furx.secret", s);
+  }
+}
+
+// Restore last pairing. Host is non-sensitive (localStorage in both); the
+// secret comes from the Keychain in the native app.
+$("host").value = localStorage.getItem("furx.host") || (location.host || "127.0.0.1:43118");
+// Async Keychain load (native). Only fill if the user hasn't started typing —
+// avoids clobbering their input if the IPC round-trip is slow (Codex review).
+(async () => {
+  const s = await loadSecret();
+  if (s && !$("secret").value) $("secret").value = s;
+})();
+
+$("connect").onclick = () => connect();
+$("disconnect").onclick = () => { if (transport) transport.close(); };
+$("send").onclick = () => sendCmd();
+$("cmd").addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendCmd(); }
+});
+
+async function connect() {
+  const host = $("host").value.trim();
+  secret = $("secret").value.trim();
+  if (!/^[0-9a-fA-F]{64}$/.test(secret)) { toast("Secret must be 64 hex chars"); return; }
+  localStorage.setItem("furx.host", host);
+  await saveSecret(secret);
+  // Native (Tauri) always uses ws:// via Rust; browser picks wss on https origins.
+  const proto = (!IN_TAURI && location.protocol === "https:") ? "wss" : "ws";
+  const url = `${proto}://${host}/ws`;
+  transport = IN_TAURI ? makeTauriTransport() : makeBrowserTransport();
+  await transport.open(url, {
+    onOpen: async () => {
+      const hello = await signedFrame(secret, "hello", { client_id: IN_TAURI ? "ios" : "pwa" });
+      transport.send(hello);
+    },
+    onMessage,
+    onClose: () => {
+      setConn("off"); showPair(); toast("Disconnected"); endLiveActivity();
+      // 017 — tear down nav/command/event state so a reconnect starts clean.
+      navReady = false; protocolOk = true; document.body.classList.remove("navmode");
+      $("bottomnav").classList.add("hidden");
+      navReset(); cmdReset();
+    },
+    onError: () => toast("Connection error"),
+  });
+}
+
+function onMessage(m) {
+  switch (m.type) {
+    case "hello_ack":
+      setConn("on"); panes = m.panes || []; cards = m.cards || [];
+      resetSeq(); // 017: fresh connection → re-sync seq cursor (FR-011)
+      protocolOk = true; // 017 [MF-1]: assume OK; the version check below flips it.
+      // 017 [T068] — protocol-version feature detection. If the desktop speaks a
+      // different protocol version, DEGRADE to the flat view (no bottom-nav) and
+      // tell the user, instead of rendering a possibly-incompatible nav (FR-016).
+      if (typeof m.protocol_version === "number" && m.protocol_version !== MOBILE_PROTOCOL_VERSION) {
+        protocolOk = false; // 017 [MF-1]: sticky — keeps signed nav/catalog/event frames ignored.
+        navReady = false; document.body.classList.remove("navmode");
+        $("bottomnav").classList.add("hidden");
+        toast(`Desktop protocol v${m.protocol_version} ≠ app v${MOBILE_PROTOCOL_VERSION} — using basic view`);
+      }
+      showSession(); renderPanes(); renderCards();
+      if (panes.length) subscribe(panes[0].pane_id);
+      toast(`Connected · ${panes.length} pane(s)`);
+      // Ask for OS notification permission once connected.
+      if (IN_TAURI) {
+        window.__TAURI__.core.invoke("plugin:notification|request_permission").catch(() => {});
+      } else if ("Notification" in window && Notification.permission === "default") {
+        Notification.requestPermission().catch(() => {});
+      }
+      break;
+    case "pane_snapshot":
+      if (m.pane_id === subscribed) {
+        $("view").textContent = (m.last_lines || []).join("\n") || "(empty)";
+        $("view").scrollTop = $("view").scrollHeight;
+        updatePaneState(m.pane_id, m.state);
+      }
+      break;
+    case "bridge_error":
+      // 017 — a pending-approval reply for a risky command exec from mobile.
+      if (typeof m.message === "string" && m.message.startsWith("pending_approval")) {
+        toast("Sent for approval — approve on the desktop");
+      } else {
+        toast(`Error: ${m.message}`);
+      }
+      break;
+    case "pong": break;
+    // 017 [T040/T063] — SIGNED bottom-nav structure. Verify the server signature
+    // before rendering (defense-in-depth vs a MITM'd nav).
+    case "nav_spec":
+      handleNavSpec(m);
+      break;
+    // 017 [T041/T063] — SIGNED command catalog. Verify, then render the surface.
+    case "command_catalog":
+      handleCommandCatalog(m);
+      break;
+    // 017 [T042/T063] — SIGNED typed AppEvent. Verify, then apply by seq order.
+    case "app_event":
+      handleAppEvent(m);
+      break;
+    case "notification":
+      notify(m); // toast + OS notification (if permitted)
+      // A new card notification → add to the approve list if not present.
+      if (m.kind === "card" && m.correlation_id && !cards.some((c) => c.id === m.correlation_id)) {
+        cards.unshift({ id: m.correlation_id, title: m.title, severity: m.severity, project: "" });
+        renderCards();
+      }
+      // pane-ready → start a Live Activity ("Claude is waiting for input") natively.
+      if (m.kind === "pane_ready") {
+        startLiveActivity(m.title || "Claude is waiting for input", m.correlation_id || "pane");
+      }
+      break;
+  }
+}
+
+function renderPanes() {
+  const wrap = $("panes"); wrap.innerHTML = "";
+  if (!panes.length) { wrap.innerHTML = '<span class="hint">No live panes on the desktop.</span>'; return; }
+  for (const p of panes) {
+    const chip = document.createElement("div");
+    chip.className = "pane-chip" + (p.pane_id === subscribed ? " active" : "");
+    chip.innerHTML = `<span class="st st-${p.state || "idle"}"></span>${p.pane_id}`;
+    chip.onclick = () => subscribe(p.pane_id);
+    wrap.appendChild(chip);
+  }
+}
+function updatePaneState(id, state) {
+  const p = panes.find((x) => x.pane_id === id); if (p) { p.state = state; renderPanes(); }
+}
+
+function renderCards() {
+  const wrap = $("cards"); const box = $("cards-wrap");
+  box.classList.toggle("hidden", cards.length === 0);
+  wrap.innerHTML = "";
+  for (const c of cards) {
+    const el = document.createElement("div");
+    el.className = `card sev-${c.severity || "info"}`;
+    const meta = c.project ? `${c.project} · ${c.severity || "info"}` : (c.severity || "info");
+    el.innerHTML =
+      `<div class="ct"></div><div class="cmeta"></div>` +
+      `<div class="acts"><button data-d="approve">Approve</button>` +
+      `<button class="rej" data-d="reject">Reject</button>` +
+      `<button class="snz" data-d="snooze">Snooze</button></div>`;
+    el.querySelector(".ct").textContent = c.title || c.id;
+    el.querySelector(".cmeta").textContent = meta;
+    el.querySelectorAll("button").forEach((b) => {
+      b.onclick = () => decideCard(c.id, b.dataset.d);
+    });
+    wrap.appendChild(el);
+  }
+}
+
+async function decideCard(cardId, decision) {
+  const frame = await signedFrame(secret, "approve_tool_call", { correlation_id: cardId, decision });
+  transport.send(frame);
+  cards = cards.filter((c) => c.id !== cardId); // optimistic remove
+  renderCards();
+  toast(`${decision === "approve" ? "Approved" : decision === "reject" ? "Rejected" : "Snoozed"}`);
+}
+
+// ───────────────────────────── 017 bottom-nav ───────────────────────────────
+
+// SIGNED NavSpec → verify → render the data-driven bottom-nav. The "work" tab
+// shows the original pane viewer (#sec-work); other tabs show their nav items.
+async function handleNavSpec(m) {
+  if (!protocolOk) return; // 017 [MF-1]: incompatible desktop → never (re)enable the nav.
+  const body = JSON.stringify(m.spec);
+  if (!(await verifyOutbound(secret, "nav_spec", m, body))) {
+    toast("Rejected an unsigned nav update"); return;
+  }
+  navReady = true;
+  document.body.classList.add("navmode");
+  $("bottomnav").classList.remove("hidden");
+  renderNav($("bottomnav"), $("nav-sections"), m.spec, onNavSelect);
+  onNavSelect(activeDomainId());
+}
+
+// Toggle which surface shows for the active domain. "work" → the pane viewer;
+// any other domain → its item list + the Commands surface.
+function onNavSelect(domainId) {
+  const isWork = domainId === "work";
+  $("sec-work").classList.toggle("hidden", !isWork);
+  $("sec-commands").classList.toggle("hidden", isWork);
+  // nav.js already toggles the per-domain #nav-sections children; hide them all
+  // when "work" is active (work uses #sec-work, not a generic item list).
+  $("nav-sections").classList.toggle("hidden", isWork);
+}
+
+// SIGNED CommandCatalog → verify → populate the command surface.
+async function handleCommandCatalog(m) {
+  if (!protocolOk) return; // 017 [MF-1]: incompatible desktop → no command surface.
+  const body = JSON.stringify(m.commands);
+  if (!(await verifyOutbound(secret, "command_catalog", m, body))) {
+    toast("Rejected an unsigned command catalog"); return;
+  }
+  setCatalog(Array.isArray(m.commands) ? m.commands : []);
+  renderCommands($("cmdlist"), $("cmdsearch"), execCommand);
+}
+
+// SIGNED AppEvent → verify (body = "seq|json") → apply by seq order.
+async function handleAppEvent(m) {
+  if (!protocolOk) return; // 017 [MF-1]: incompatible desktop → ignore typed events.
+  const eventBody = JSON.stringify(m.event);
+  const body = `${m.seq}|${eventBody}`;
+  if (!(await verifyOutbound(secret, "app_event", m, body))) {
+    return; // drop silently — never apply an unverified event
+  }
+  applyEvent({ event: m.event, seq: m.seq, ts: m.event_ts });
+}
+
+// Send a SIGNED execute_command (command-id ref only, no args). The server
+// re-authorizes at exec time; risky commands come back as pending_approval.
+async function execCommand(commandId) {
+  if (!transport) return;
+  const frame = await signedFrame(secret, "execute_command", { command_id: commandId });
+  transport.send(frame);
+  toast(`Run: ${commandId}`);
+}
+
+// React to typed events: refresh approvals list on ApprovalRequested.
+onAppEvent((ev) => {
+  if (ev && ev.tag === "ApprovalRequested") {
+    toast("New approval requested");
+  }
+});
+
+async function subscribe(paneId) {
+  subscribed = paneId; renderPanes();
+  $("view").textContent = "Loading…";
+  const frame = await signedFrame(secret, "subscribe", { pane_id: paneId });
+  transport.send(frame);
+}
+
+async function sendCmd() {
+  const ta = $("cmd"); const text = ta.value;
+  if (!subscribed) { toast("Select a pane first"); return; }
+  if (!text) return;
+  // Append a newline so the command executes in the pane's shell/REPL.
+  const frame = await signedFrame(secret, "pty_write", {
+    pane_id: subscribed, source: "manual", text: text.endsWith("\n") ? text : text + "\n",
+  });
+  transport.send(frame);
+  ta.value = "";
+  endLiveActivity(); // Claude got input → clear the "waiting" Live Activity.
+}
+
+// Native Live Activity lifecycle (council + Codex review): track the active pane
+// and always end it on disconnect / page unload so it never lingers stale.
+function startLiveActivity(status, paneId) {
+  if (!IN_TAURI) return;
+  liveActivityPane = paneId;
+  window.__TAURI__.core
+    .invoke("plugin:voice|start_live_activity", { payload: { status, paneId } })
+    .catch(() => {});
+}
+function endLiveActivity() {
+  if (!IN_TAURI || !liveActivityPane) return;
+  liveActivityPane = null;
+  window.__TAURI__.core.invoke("plugin:voice|stop_live_activity").catch(() => {});
+}
+if (typeof window !== "undefined") {
+  window.addEventListener("pagehide", () => endLiveActivity());
+}
+
+// Voice — dual path (council V5):
+//  - Native (Tauri): on-device SFSpeechRecognizer via the `voice` plugin (WKWebView
+//    has no Web Speech). Tap to start, tap again to stop → transcript fills the box.
+//  - Browser (Safari/PWA): Web Speech API.
+const mic = $("mic");
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (!IN_TAURI && !SR) { mic.disabled = true; mic.title = "Voice not supported"; }
+
+let rec = null;            // browser SpeechRecognition instance
+let nativeListening = false;
+
+mic.onclick = () => {
+  if (IN_TAURI) return toggleNativeVoice();
+  if (!SR) return;
+  if (rec) { rec.stop(); return; }
+  rec = new SR(); rec.lang = navigator.language || "en-US"; rec.interimResults = true;
+  mic.classList.add("rec");
+  rec.onresult = (e) => {
+    $("cmd").value = Array.from(e.results).map((r) => r[0].transcript).join("");
+  };
+  rec.onend = () => { mic.classList.remove("rec"); rec = null; };
+  rec.onerror = () => { mic.classList.remove("rec"); rec = null; toast("Voice error"); };
+  rec.start();
+};
+
+function toggleNativeVoice() {
+  const invoke = window.__TAURI__.core.invoke;
+  if (!nativeListening) {
+    nativeListening = true; mic.classList.add("rec");
+    // Resolves with the final transcript once stop_listening is called.
+    invoke("plugin:voice|start_listening")
+      .then((r) => { if (r && r.transcript) $("cmd").value = r.transcript; })
+      .catch((e) => toast("Voice: " + String(e)))
+      .finally(() => { nativeListening = false; mic.classList.remove("rec"); });
+  } else {
+    invoke("plugin:voice|stop_listening").catch(() => {});
+  }
+}
+
+function showSession() { $("pair").classList.add("hidden"); $("session").classList.remove("hidden"); }
+function showPair() { $("session").classList.add("hidden"); $("pair").classList.remove("hidden"); }
+
+// PWA: register service worker (offline shell). Non-fatal if it fails.
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+}
+</script>
+<!-- 065 — wiring del pareo por QR / short-code. El CANJE usa el transporte unificado (browser WebSocket
+     o el IPC nativo ws_connect/listen — audit codex HIGH: iOS WKWebView bloquea `new WebSocket` directo).
+     Al obtener {host,secret} llena los campos y dispara #connect (reusa la lógica de conexión existente). -->
+<script type="module">
+import { parsePairingUri, buildCandidateUrls, redeemFrame, fetchShortCodeToken } from "./pairing.js";
+
+const $ = (id) => document.getElementById(id);
+const PIN_TAURI = !!(window.__TAURI__ && window.__TAURI__.core);
+const toast = (m) => {
+  const t = $("toast");
+  if (!t) { console.log(m); return; }
+  t.textContent = m; t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2600);
+};
+const hostOf = (url) => url.replace(/^wss?:\/\//, "").replace(/\/ws$/, "");
+
+// Canje de UN candidato. Devuelve {secret, host}. Browser → WebSocket; nativo → ws_connect/listen (Rust).
+function redeemOnce(url, frame) {
+  if (PIN_TAURI) {
+    const { invoke } = window.__TAURI__.core;
+    const { listen } = window.__TAURI__.event;
+    return new Promise((resolve, reject) => {
+      let unMsg = null, unClose = null, done = false, gen = 0;
+      const timer = setTimeout(() => finish(reject, new Error("pairing_timeout")), 10000);
+      // AWAIT del ws_disconnect ANTES de resolver (audit codex): el companion Rust usa UN socket global;
+      // serializa el cierre del socket de pairing antes de que la sesión (applyPairing→connect) conecte.
+      async function finish(fn, arg) {
+        if (done) return; done = true;
+        clearTimeout(timer);
+        if (unMsg) { unMsg(); unMsg = null; }
+        if (unClose) { unClose(); unClose = null; }
+        try { await invoke("ws_disconnect"); } catch {}
+        fn(arg);
+      }
+      (async () => {
+        try {
+          // Listeners ANTES de conectar, en awaits SECUENCIALES — NO Promise.all (audit codex: si el 2º
+          // listen rechaza, Promise.all perdía el unsubscribe del 1º → leak). Acá el 1º queda capturado
+          // en unMsg y finish lo limpia.
+          unMsg = await listen("furx:ws-message", (e) => {
+            if (e.payload.gen !== gen) return;
+            let msg; try { msg = JSON.parse(e.payload.data); } catch { return; }
+            if (msg.type === "pairing_grant") finish(resolve, { secret: msg.secret, host: hostOf(url) });
+            else if (msg.type === "bridge_error") finish(reject, new Error(msg.message || "pairing_failed"));
+          });
+          // Guard POR listener (audit codex): si finish() ya corrió (timeout/grant) mientras este await
+          // estaba pendiente, finish no pudo limpiar un handle aún no asignado → lo desuscribimos acá.
+          if (done) { unMsg(); return; }
+          unClose = await listen("furx:ws-closed", (e) => {
+            if (e.payload === gen) finish(reject, new Error("ws_closed"));
+          });
+          if (done) { unClose(); return; }
+          gen = await invoke("ws_connect", { url });
+          // Si timeouteó DURANTE el connect, el socket recién registrado quedaría huérfano (audit codex):
+          // desconectarlo y NO enviar. (ws_connect del Rust aborta la conexión previa al arrancar, así que
+          // un próximo candidato/sesión igual lo reemplazaría; esto lo cierra de inmediato.)
+          if (done) { invoke("ws_disconnect").catch(() => {}); return; }
+          await invoke("ws_send", { text: JSON.stringify(frame) });
+        } catch (err) {
+          finish(reject, new Error(String(err)));
+        }
+      })();
+    });
+  }
+  return new Promise((resolve, reject) => {
+    const ws = new WebSocket(url);
+    let done = false;
+    const timer = setTimeout(() => finish(reject, new Error("pairing_timeout")), 10000);
+    function finish(fn, arg) { if (done) return; done = true; clearTimeout(timer); try { ws.close(); } catch {} fn(arg); }
+    ws.onopen = () => ws.send(JSON.stringify(frame));
+    ws.onmessage = (e) => {
+      let m; try { m = JSON.parse(e.data); } catch { return; }
+      if (m.type === "pairing_grant") finish(resolve, { secret: m.secret, host: hostOf(url) });
+      else if (m.type === "bridge_error") finish(reject, new Error(m.message || "pairing_failed"));
+    };
+    ws.onerror = () => finish(reject, new Error("ws_error"));
+    ws.onclose = () => finish(reject, new Error("ws_closed"));
+  });
+}
+
+// Status PERSISTENTE del pareo (no un toast de 2.6s) — para leer/screenshotear el error real on-device.
+function pairStatus(msg, kind) {
+  const el = $("pair-status");
+  if (!el) { toast(msg); return; }
+  el.style.display = "block";
+  el.textContent = msg;
+  el.style.background = kind === "error" ? "#3a1c16" : kind === "ok" ? "#16301f" : "#241f17";
+  el.style.color = kind === "error" ? "#ffb3a0" : kind === "ok" ? "#9fe6bf" : "#e8e0d0";
+}
+
+// Prueba los candidatos en orden; el primero que canjea gana. Adjunta los hosts al error (diagnóstico).
+async function redeemAny(candidates, frame) {
+  let last;
+  for (const url of candidates) {
+    try { return await redeemOnce(url, frame); }
+    catch (e) { last = e; }
+  }
+  const err = last || new Error("no_reachable_host");
+  try { err.candidates = candidates.map(hostOf); } catch {}
+  throw err;
+}
+
+// Aplica el resultado: llena host+secret y dispara la conexión existente (valida, persiste, abre WS firmado).
+function applyPairing({ host, secret }) {
+  if (host) $("host").value = host;
+  $("secret").value = secret;
+  $("connect").click();
+}
+
+// Parsea un URI furx://pair y canjea (usado por el escáner nativo, el web, y el deep-link).
+async function pairWithUri(uri) {
+  const payload = parsePairingUri(uri);
+  if (payload.error) {
+    pairStatus(payload.error === "token_expired"
+      ? "El QR expiró. Regeneralo en la compu (Ajustes → Móvil) y reintentá."
+      : "QR inválido (" + payload.error + ").", "error");
+    return;
+  }
+  const cands = buildCandidateUrls(payload);
+  if (cands.length === 0) {
+    pairStatus("El QR no trae una dirección alcanzable. En Furx (compu): Ajustes → Móvil → activá 'Acceso por Tailscale' y reiniciá Furx.", "error");
+    return;
+  }
+  const target = hostOf(cands[0]);
+  pairStatus("Conectando al desktop (" + target + ")…");
+  try {
+    applyPairing(await redeemAny(cands, redeemFrame(payload.token)));
+    pairStatus("✓ Dispositivo vinculado.", "ok");
+  } catch (e) {
+    const m = String((e && e.message) || e || "");
+    const hosts = (e && e.candidates && e.candidates.join(", ")) || target;
+    if (/token_expired|already_used|token_invalid/i.test(m))
+      pairStatus("El QR expiró o ya se usó. Regeneralo en la compu y reintentá.", "error");
+    else if (/pairing_timeout/i.test(m))
+      pairStatus("El desktop no respondió a tiempo (" + hosts + "). ¿Tailscale activo en el iPhone Y en la compu, misma cuenta?", "error");
+    else // connect/closed/os error/no_reachable_host = no se pudo alcanzar el host
+      pairStatus("No pude alcanzar el desktop (" + hosts + "). El pareo va por Tailscale: instalá/activá Tailscale en el iPhone con la MISMA cuenta que la compu, y reintentá.\n\nDetalle: " + m, "error");
+  }
+}
+
+// Short-code: en iOS el POST /pair-shortcode lo hace RUST (ATS bloquea el fetch HTTP del webview);
+// en browser, fetch directo. Ambos necesitan la IP del desktop (Tailscale) — el short-code no la descubre.
+$("pair-code").onclick = async () => {
+  const code = ($("shortcode").value || "").trim().toUpperCase();
+  if (code.length !== 8) { toast("El código tiene 8 caracteres"); return; }
+  const hostField = ($("host").value || "").trim();
+  const fieldIp = hostField.split(":")[0]; // host:port → host (guard: no vacío)
+  try {
+    toast("Vinculando…");
+    if (PIN_TAURI) {
+      if (!fieldIp) { toast("Ingresá la IP Tailscale del desktop (abrí 'Pareo manual' y pegala en host)"); return; }
+      const { token, port } = await window.__TAURI__.core.invoke("pair_shortcode_token", { host: fieldIp, code });
+      applyPairing(await redeemAny([`ws://${fieldIp}:${port}/ws`], redeemFrame(token)));
+    } else {
+      const hosts = [];
+      if (fieldIp) hosts.push(fieldIp);
+      if (location.hostname && location.hostname !== "tauri.localhost") hosts.push(location.hostname);
+      const { token, host, port } = await fetchShortCodeToken(code, hosts);
+      applyPairing(await redeemAny([`ws://${host}:${port}/ws`], redeemFrame(token)));
+    }
+  } catch (e) { toast("No se pudo vincular: " + (e && e.message ? e.message : e)); }
+};
+
+let scanning = false;
+function endScan() {
+  scanning = false;
+  document.body.classList.remove("scanning");
+  $("scan-cancel").classList.add("hidden");
+}
+const bs = () => PIN_TAURI && window.__TAURI__ && window.__TAURI__.barcodeScanner;
+$("scan-cancel").onclick = () => { const p = bs(); if (p) p.cancel().catch(() => {}); endScan(); };
+
+$("scan-qr").onclick = async () => {
+  if (scanning) return;
+  // iOS/Android NATIVO: plugin de escáner (cámara nativa + prompt de permiso REAL). BarcodeDetector/
+  // getUserMedia NO funcionan en WKWebView de iOS (audit codex).
+  const plugin = bs();
+  if (plugin) {
+    scanning = true;
+    try {
+      // 1. Permiso de cámara: checkPermissions → requestPermissions (la capability default lo habilita).
+      // En iOS scan() NO auto-pide el permiso de forma confiable → pedirlo explícito (council de 3).
+      let perm = await plugin.checkPermissions();
+      if (perm !== "granted") perm = await plugin.requestPermissions();
+      if (perm !== "granted") {
+        scanning = false;
+        toast(perm === "denied"
+          ? "Permití la cámara en Ajustes → Furx Companion para escanear"
+          : "Necesito permiso de cámara para escanear el QR");
+        return;
+      }
+      // 2. Escanear. windowed:true → la webview se vuelve transparente y la cámara queda DETRÁS.
+      // Formato "QR_CODE" en MAYÚSCULA (Format.QRCode del plugin; "qr_code" NO matchea — codex leyó el iife).
+      document.body.classList.add("scanning");
+      $("scan-cancel").classList.remove("hidden");
+      const res = await plugin.scan({ windowed: true, formats: ["QR_CODE"] });
+      const content = (res && (res.content !== undefined ? res.content : res)) || "";
+      endScan();
+      if (typeof content === "string" && content.startsWith("furx://pair")) await pairWithUri(content);
+      else if (content) toast("Ese QR no es de Furx");
+    } catch (e) {
+      endScan();
+      const m = String((e && e.message) || e || "");
+      if (/cancel/i.test(m)) return;
+      if (/denied|permission|authoriz/i.test(m)) toast("Permití la cámara en Ajustes → Furx Companion para escanear");
+      else toast("No se pudo escanear: " + m); // mostrar el error REAL para diagnosticar on-device
+    }
+    return;
+  }
+  // Browser (Android Chrome / desktop con cámara): BarcodeDetector + getUserMedia.
+  if (!("BarcodeDetector" in window)) {
+    toast("Tu navegador no soporta escaneo — usá el código de 8 caracteres");
+    return;
+  }
+  const video = $("scan-video");
+  let stream = null;
+  const stop = () => {
+    scanning = false;
+    video.classList.add("hidden");
+    if (stream) stream.getTracks().forEach((t) => t.stop());
+    video.srcObject = null;
+    window.removeEventListener("pagehide", stop);
+  };
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+    scanning = true;
+    window.addEventListener("pagehide", stop);
+    video.classList.remove("hidden");
+    video.srcObject = stream;
+    await video.play();
+    const detector = new window.BarcodeDetector({ formats: ["qr_code"] });
+    const tick = async () => {
+      if (!scanning) return;
+      let hit = null;
+      try {
+        const codes = await detector.detect(video);
+        hit = codes.find((c) => (c.rawValue || "").startsWith("furx://pair"));
+      } catch { requestAnimationFrame(tick); return; }
+      if (!hit) { requestAnimationFrame(tick); return; }
+      stop();
+      await pairWithUri(hit.rawValue);
+    };
+    requestAnimationFrame(tick);
+  } catch {
+    stop();
+    toast("Sin acceso a la cámara — usá el código de 8 caracteres");
+  }
+};
+
+// Deep-link: si el QR se escanea con la Cámara nativa de iOS y abre la app con furx://pair (URL scheme),
+// el plugin de deep-link emite el evento — lo canjeamos directo. (Best-effort; no rompe si no está.)
+if (PIN_TAURI && window.__TAURI__ && window.__TAURI__.event) {
+  window.__TAURI__.event.listen("deep-link://new-url", (e) => {
+    const urls = Array.isArray(e.payload) ? e.payload : [e.payload];
+    const u = urls.find((x) => typeof x === "string" && x.startsWith("furx://pair"));
+    if (u) pairWithUri(u);
+  }).catch(() => {});
+}
+</script>
+</body>
+</html>

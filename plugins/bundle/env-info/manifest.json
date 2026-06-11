@@ -1,0 +1,18 @@
+{
+  "name": "env-info",
+  "version": "1.0.0",
+  "description": "OS/arch/cwd del entorno (no expone variables de entorno).",
+  "entrypoint": "run.sh",
+  "entrypoint_sha256": "e12a4d1833c7d1bc5f9621de43671d4b6ec0bb5be0c8e1a55d2f608cb56c09e3",
+  "permissions": {
+    "net": [],
+    "fs_read": [
+      "."
+    ],
+    "fs_write": [],
+    "shell": false,
+    "secrets": []
+  },
+  "signature": "bpNrFAyZbOZiyjfxW5SUFWsBzqtzn9KeWUxikgVw+qKg1zkMLg4Jh1gI58u1qV/pUZr7ZYVYYnjv/cOvf5oEBQ==",
+  "pubkey": "bgkQbOB0kcIRVzmmv7FVf8Bm2Cx/UPsDbT0VNcBrOp8="
+}

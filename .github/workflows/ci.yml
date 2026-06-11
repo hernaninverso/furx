@@ -1,0 +1,112 @@
+# CI — every push / PR. Build verify + Rust tests + frontend build.
+
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint-and-test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
+
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae # v2
+        with:
+          workspaces: "./src-tauri -> target"
+
+      - name: Install npm
+        run: npm ci --no-audit --no-fund
+
+      - name: Brand guard (coral · sin marca legacy)
+        run: bash scripts/check-brand.sh
+
+      - name: Frontend typecheck + build
+        run: npm run build
+
+      - name: Rust build
+        run: cd src-tauri && cargo build --release --lib
+
+      - name: Rust tests
+        run: cd src-tauri && cargo test --release --lib
+
+      # Spec 039 — keep the aie-internal-bearer access consolidated in the helper.
+      # These tests (keychain_bearer + the real-Keychain e2e) only run on macOS.
+      - name: Spec 039 bearer-helper guards
+        run: |
+          set -e
+          cd src-tauri/src
+          # SC-004: the literal "aie-internal-bearer" must appear ONLY in the helper const.
+          # Use a glob exclusion (path-based) rather than filtering output text.
+          if rg -n '"aie-internal-bearer"' -g '*.rs' -g '!services/keychain_bearer.rs'; then
+            echo "::error::SC-004 violation — \"aie-internal-bearer\" literal outside keychain_bearer.rs"
+            exit 1
+          fi
+          # SC-002: no /usr/bin/security shelling that reads the bearer. We scan each
+          # /usr/bin/security invocation's surrounding lines for the bearer service name.
+          # keychain_bearer.rs is excluded: it only mentions the old pattern in its doc comments.
+          if rg -n -U '/usr/bin/security[\s\S]{0,200}aie-internal-bearer' -g '*.rs' \
+              -g '!services/keychain_bearer.rs'; then
+            echo "::error::SC-002 violation — a /usr/bin/security read of aie-internal-bearer reappeared (use keychain_bearer::get_bearer)"
+            exit 1
+          fi
+          echo "Spec 039 guards passed (SC-002 + SC-004)."
+
+      - name: Clippy (deny deprecated)
+        run: cd src-tauri && cargo clippy --all-targets -- -D deprecated
+
+  linux-build-smoke:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
+
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@42dc69e1aa15d09112580998cf2ef0119e2e91ae # v2
+        with:
+          workspaces: "./src-tauri -> target"
+
+      - name: Linux deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            libssl-dev
+
+      - name: Install npm
+        run: npm ci --no-audit --no-fund
+
+      - name: Brand guard (coral · sin marca legacy)
+        run: bash scripts/check-brand.sh
+
+      - name: Frontend build
+        run: npm run build
+
+      - name: Rust build (smoke — Linux compiles)
+        run: cd src-tauri && cargo build --release --lib

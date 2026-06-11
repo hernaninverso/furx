@@ -1,0 +1,96 @@
+/* ════════════════════════════════════════════════════════════════════════
+   FURX SEMANTIC TOKENS — US8 (spec 015-frontend-reform-kernel)
+   ────────────────────────────────────────────────────────────────────────
+   Capa SEMÁNTICA sobre las primitivas V3 "atelier" que viven en styles.css
+   (`:root` light / `.dark` dark). NO define colores nuevos: cada token apunta
+   a una primitiva V3 existente (--bg, --text, --cyan, --clay, --mono, --sp-N…).
+   Un theme switch o brand refresh sigue siendo un solo lugar (styles.css);
+   esta capa solo le pone NOMBRES estables y semánticos que los componentes
+   canónicos consumen.
+
+   Convención del spec: --color-bg-*, --color-fg-*, --color-border-*,
+   --color-intent-{danger,warning,success,info}, --space-*, --radius-*,
+   --font-{display,body,mono}, --shadow-*, --z-*.
+
+   Light/dark: NO se reimplementa aquí. Como las primitivas V3 ya flipean por
+   `.dark` en styles.css y estos tokens las REFERENCIAN con var(), heredan el
+   theme automáticamente. (Estructura lista para light/dark futuro — el dark V3
+   ya existe; esta capa no lo bloquea.)
+
+   IMPORT ORDER (crítico): styles.css debe @import esta hoja DESPUÉS de declarar
+   sus :root/.dark, para que las var() referenciadas ya existan.
+   ════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ─── Color · background roles ───────────────────────────────────── */
+  --color-bg-base:      var(--bg);        /* página / canvas */
+  --color-bg-subtle:    var(--bg2);       /* zonas hundidas, code blocks */
+  --color-bg-surface:   var(--panel);     /* cards, paneles, superficie de modal */
+  --color-bg-elevated:  var(--panel-2);   /* segunda elevación, controles */
+  --color-bg-overlay:   rgba(0, 0, 0, 0.7); /* scrim de backdrop (V3 modal-backdrop) */
+  --color-bg-hover:     var(--wash-1);    /* hover neutro theme-aware */
+  --color-bg-active:    var(--wash-2);    /* pressed / selected neutro */
+  --color-bg-accent:    var(--accent-glow); /* tinte de acento sutil (selección) */
+
+  /* ─── Color · foreground (text/icon) roles ───────────────────────── */
+  --color-fg-default:   var(--text);      /* texto principal */
+  --color-fg-muted:     var(--muted);     /* secundario */
+  --color-fg-subtle:    var(--dim);       /* hints / labels / disabled-ish */
+  --color-fg-accent:    var(--accent);    /* énfasis de marca (teal V3) */
+  --color-fg-on-accent: var(--bg);        /* texto sobre relleno de acento */
+
+  /* ─── Color · border roles ───────────────────────────────────────── */
+  --color-border-default: var(--line);        /* hairline V3 */
+  --color-border-strong:  var(--line-strong); /* énfasis */
+  --color-border-accent:  var(--accent);      /* foco / activo */
+
+  /* ─── Color · intents (status) ───────────────────────────────────── */
+  --color-intent-danger:      var(--red);
+  --color-intent-danger-bg:   var(--red-dim);
+  --color-intent-warning:     var(--amber);
+  --color-intent-warning-bg:  var(--amber-dim);
+  --color-intent-success:     var(--green);
+  --color-intent-success-bg:  var(--green-dim);
+  --color-intent-info:        var(--accent);
+  --color-intent-info-bg:     var(--accent-glow);
+
+  /* ─── Spacing (alias estable sobre la escala V3 --sp-*) ──────────── */
+  --space-xs: var(--sp-1);   /* 4px  */
+  --space-sm: var(--sp-2);   /* 8px  */
+  --space-md: var(--sp-3);   /* 12px */
+  --space-lg: var(--sp-4);   /* 16px */
+  --space-xl: var(--sp-5);   /* 24px */
+  --space-2xl: var(--sp-6);  /* 32px */
+  --space-3xl: var(--sp-7);  /* 48px */
+
+  /* ─── Radii (alias sobre --r-* V3) ───────────────────────────────── */
+  --radius-sm:   var(--r-sm);    /* 3px */
+  --radius-md:   var(--r-md);    /* 5px */
+  --radius-lg:   var(--r-lg);    /* 8px */
+  --radius-pill: var(--r-full);  /* 999px */
+
+  /* ─── Typography families ────────────────────────────────────────── */
+  --font-display: var(--display); /* Fraunces — títulos/marca */
+  --font-body:    var(--sans);    /* Hanken Grotesk — UI */
+  --font-mono:    var(--mono);    /* Space Mono — data/labels/shortcuts */
+
+  /* ─── Elevation / shadows ────────────────────────────────────────── */
+  /* Nombres semánticos distintos de las primitivas V3 (--shadow-sm/md/lg)
+     para evitar ciclos de var(). Apuntan a las primitivas V3 directamente. */
+  --shadow-low:   var(--shadow-sm);
+  --shadow-mid:   var(--shadow-md);
+  --shadow-high:  var(--shadow-lg);
+  --shadow-modal: 0 24px 60px rgba(0, 0, 0, 0.6); /* V3 .wizard elevation */
+
+  /* ─── Z-index scale (evita magic numbers) ────────────────────────── */
+  /* Alinea con el stacking real del app (Modal.tsx usa 1000+ por instancia,
+     backdrop styles.css usa 999). Estos tokens son el contrato canónico. */
+  --z-base:    0;
+  --z-pane:    1;
+  --z-sticky:  50;
+  --z-drawer:  90;
+  --z-overlay: 999;   /* modal backdrop base (Modal.tsx incrementa por stack) */
+  --z-modal:   1000;
+  --z-toast:   2000;
+  --z-tooltip: 2500;
+}

@@ -1,0 +1,25 @@
+{
+  "name": "test-coverage",
+  "version": "1.0.0",
+  "description": "test-coverage (goldbergyoni/test-coverage-mcp, MIT) — token-efficient LCOV test-coverage awareness for the test-first gate, language-agnostic. Offline, no secrets. Runtime dep: npm i -g test-coverage-mcp or npx (or set TEST_COVERAGE_MCP_BIN).",
+  "entrypoint": "run.sh",
+  "entrypoint_sha256": "022b3133c9f69d3c3e64fb1d1dc4bf03cc1c968c78c6f957e1a8190f11f0021c",
+  "permissions": {
+    "net": [],
+    "fs_read": [
+      "$PROJECT_ROOT"
+    ],
+    "fs_write": [],
+    "shell": false,
+    "secrets": []
+  },
+  "signature": "bb+t33rIW8VphCeaH/PYS2lgodOsLKMysqaGksY+N9wi1TtpDWCjEdlLfitVFUSxxnEiNP4TwMCagvQxVrfLDg==",
+  "pubkey": "bgkQbOB0kcIRVzmmv7FVf8Bm2Cx/UPsDbT0VNcBrOp8=",
+  "mcp": {
+    "command": "run.sh",
+    "args": [
+      "$PROJECT_ROOT"
+    ],
+    "env": {}
+  }
+}

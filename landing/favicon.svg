@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Furx">
+  <!-- Furx V4 "coral" mark — italic editorial F in a ruled square. Theme-aware. -->
+  <style>
+    .sq { fill: #ece7da; stroke: #1c1814; }
+    .ltr { fill: #FF5C35; }
+    @media (prefers-color-scheme: dark) {
+      .sq { fill: #262119; stroke: #efe7d8; }
+      .ltr { fill: #ff8a6e; }
+    }
+  </style>
+  <rect x="4.5" y="4.5" width="55" height="55" rx="6" class="sq" stroke-width="3"/>
+  <text x="33" y="47" text-anchor="middle" class="ltr"
+        font-family="Fraunces, Georgia, 'Times New Roman', serif"
+        font-style="italic" font-weight="600" font-size="44">F</text>
+</svg>

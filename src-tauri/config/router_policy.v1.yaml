@@ -1,0 +1,50 @@
+# Cost-Router Fase 2 — policy v1 (council-v6-canonical.md §P3).
+#
+# Esta es la policy de los GATES DE SEGURIDAD del router. El router NO carga este archivo en runtime
+# por defecto (council §P3: NUNCA file-watch): el default embebido `RouterPolicy::default_v1()` es la
+# fuente de verdad, idéntico a este archivo. Este YAML queda como IaC / referencia / lo que se
+# cargaría vía el comando autenticado `cost_router_policy_reload`. Fail-closed: policy inválida ⇒
+# todo premium.
+
+version: 1
+
+# Tools cuyo nombre matchea estos globs ⇒ SIEMPRE premium (nunca free). Sufijo `*` = prefijo.
+force_premium_tools:
+  - "auth_*"
+  - "migrate_*"
+  - "crypto_*"
+  - "secrets_*"
+
+# Rutas que tocan secretos/billing/auth ⇒ SIEMPRE premium.
+force_premium_routes:
+  - "/api/secrets/*"
+  - "/api/billing/*"
+  - "/api/auth/*"
+
+# Redacción ANTES de mandar nada a un tier free. Patterns extra a los de cloud_sanitizer
+# (sk-/Bearer/email/IBAN/ARN/UUID), que el router aplica además.
+redact_before_routing:
+  patterns:
+    - "(api[_-]?key|token|password|private[_-]?key|bearer|secret)\\s*[=:]\\s*['\"][^'\"]{8,}"
+    - "sk-[A-Za-z0-9]{20,}"
+    - "AKIA[A-Z0-9]{16}"
+    - "-----BEGIN [A-Z ]*PRIVATE KEY-----"
+  action: replace_with_placeholder
+  min_confidence: 0.95
+
+# Campos que NUNCA pueden ir a un tier free (data residency).
+data_residency:
+  free_tier_prohibited:
+    - raw_prompt
+    - diff_content
+    - file_paths
+    - env_vars
+
+# Hard gate: una tarea con más de N tools ⇒ premium (demasiado compleja para cheap).
+hard_gate_tool_count: 10
+
+governance:
+  review_cadence: quarterly
+  change_requires: git_pr_plus_review
+  rollback: git_revert
+  reload_semantic: authenticated_explicit_only

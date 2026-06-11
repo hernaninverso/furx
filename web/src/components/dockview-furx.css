@@ -1,0 +1,60 @@
+/* dockview-furx.css — 018 Fase 2 US1 · tema V3 "atelier" para dockview (F-VI).
+ *
+ * dockview se importa con su CSS base (node_modules/dockview/dist/styles/dockview.css)
+ * y se theme-ea SÓLO con sus CSS vars (--dv-*), mapeadas a los tokens V3 de
+ * design/furx-theme.css. Theme-aware: el bloque `.dark` reusa los tokens dark del
+ * tema (el toggle de TopBar pone `.dark` en <html>, ese flujo no se toca). NO se
+ * introduce ningún color hardcodeado — todo deriva de los tokens V3.
+ *
+ * La clase `.dockview-theme-furx` se aplica al contenedor de dockview en WorkspaceView. */
+
+.dockview-theme-furx {
+  /* superficies */
+  --dv-group-view-background-color: var(--bg-1);
+  --dv-tabs-and-actions-container-background-color: var(--bg-2);
+  --dv-activegroup-visiblepanel-tab-background-color: var(--bg-1);
+  --dv-activegroup-hiddenpanel-tab-background-color: var(--bg-2);
+  --dv-inactivegroup-visiblepanel-tab-background-color: var(--bg-2);
+  --dv-inactivegroup-hiddenpanel-tab-background-color: var(--bg-2);
+
+  /* texto de pestañas */
+  --dv-activegroup-visiblepanel-tab-color: var(--ink);
+  --dv-activegroup-hiddenpanel-tab-color: var(--ink-2);
+  --dv-inactivegroup-visiblepanel-tab-color: var(--ink-2);
+  --dv-inactivegroup-hiddenpanel-tab-color: var(--ink-3);
+
+  /* separadores / sashes (resizers) — el accent V3 marca el sash activo */
+  --dv-separator-border: var(--line);
+  --dv-tab-divider-color: var(--line);
+  --dv-sash-color: transparent;
+  --dv-active-sash-color: var(--accent);
+  --dv-paneview-header-border-color: var(--line);
+  --dv-paneview-active-outline-color: var(--accent);
+
+  /* drag/drop targets (US4) — clay como señal */
+  --dv-drag-over-background-color: var(--accent-dim);
+  --dv-drag-over-border-color: var(--accent);
+
+  /* tipografía: labels mono V3 */
+  --dv-tabs-and-actions-container-font-size: 11px;
+  --dv-tab-font-size: 11px;
+  --dv-border-radius: var(--radius, 4px);
+
+  /* iconos */
+  --dv-icon-hover-background-color: var(--bg-3);
+
+  height: 100%;
+  width: 100%;
+}
+
+/* El contenido del pane (nuestro componente React) hereda el fondo del tema. */
+.dockview-theme-furx .dv-react-part {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+/* La etiqueta de cada pestaña usa la mono V3 para consistencia editorial. */
+.dockview-theme-furx .tab .dv-default-tab-content {
+  font-family: var(--font-mono, "Space Mono", monospace);
+  letter-spacing: 0.02em;
+}

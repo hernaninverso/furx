@@ -1,0 +1,13 @@
+# Automatically generated - DO NOT EDIT!
+
+"$schema" = "../../schemas/schema.json"
+
+[[permission]]
+identifier = "allow-stop-live-activity"
+description = "Enables the stop_live_activity command without any pre-configured scope."
+commands.allow = ["stop_live_activity"]
+
+[[permission]]
+identifier = "deny-stop-live-activity"
+description = "Denies the stop_live_activity command without any pre-configured scope."
+commands.deny = ["stop_live_activity"]

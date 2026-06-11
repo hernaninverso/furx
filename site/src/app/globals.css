@@ -1,0 +1,211 @@
+@import "./furx-theme.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur-instant: 80ms;
+    --dur-fast: 120ms;
+    --dur-base: 200ms;
+    --dur-slow: 320ms;
+  }
+
+  html {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    /* subtle warm grain — theme-aware */
+    background-image: radial-gradient(circle at 1px 1px, var(--grain) 1px, transparent 0);
+    background-size: 24px 24px;
+    transition: background var(--dur-base) var(--ease-out-expo), color var(--dur-base) var(--ease-out-expo);
+  }
+
+  body { min-height: 100dvh; }
+
+  ::selection { background: var(--clay-dim); color: var(--ink); }
+
+  /* Fraunces wonky optical serif for display headings */
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.012em;
+    color: var(--ink);
+    font-weight: 400;
+    font-variation-settings: "opsz" 96, "WONK" 1, "SOFT" 24;
+  }
+  h1 { font-weight: 400; }
+  h2 { font-weight: 400; }
+  h1 em, h2 em, h3 em { font-style: italic; font-weight: 500; }
+
+  pre, code, kbd { font-family: var(--font-mono); }
+
+  a:focus-visible,
+  button:focus-visible,
+  [role="button"]:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: var(--radius);
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center gap-2 font-semibold px-5 py-3;
+    background: var(--accent); color: var(--bg);
+    border: 1.5px solid var(--accent);
+    border-radius: var(--radius);
+    transition: transform var(--dur-fast) var(--ease-out-expo), background var(--dur-fast), border-color var(--dur-fast);
+    font-family: var(--font-mono);
+    font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .btn-primary:hover { background: var(--accent-2); border-color: var(--accent-2); transform: translateY(-1px); }
+  .btn-primary .kbd {
+    font-family: var(--font-mono); font-size: 11px;
+    background: rgba(255,255,255,0.18); padding: 1px 6px; border-radius: 2px; margin-left: 4px;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 px-4 py-3;
+    color: var(--ink);
+    border: 1.5px solid var(--line-2);
+    background: var(--bg-1);
+    border-radius: var(--radius);
+    font-family: var(--font-mono);
+    font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em;
+    transition: border-color var(--dur-fast), color var(--dur-fast);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-3 py-2;
+    color: var(--ink-2);
+    border-radius: var(--radius);
+    font-family: var(--font-mono);
+    font-size: 12.5px; letter-spacing: 0.04em;
+    transition: color var(--dur-fast);
+  }
+  .btn-ghost:hover { color: var(--ink); }
+
+  .pill {
+    @apply inline-flex items-center gap-1.5;
+    font-family: var(--font-mono);
+    background: var(--bg-2);
+    border: 1px solid var(--line-2);
+    padding: 3px 9px;
+    border-radius: 1px;
+    font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--ink-2);
+  }
+  .pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ok); display: inline-block; }
+  .pill-accent { color: var(--accent); background: var(--accent-dim); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+
+  .code-block {
+    background: #16130f;
+    color: #efe7d8;
+    border-radius: var(--radius-lg);
+    padding: 16px 20px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.6;
+    overflow-x: auto;
+    box-shadow: var(--shadow);
+  }
+
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 9999;
+    background: var(--ink);
+    color: var(--bg);
+    padding: 8px 16px;
+    font-weight: 600;
+    border-radius: 0 0 var(--radius) 0;
+  }
+  .skip-link:focus { left: 0; }
+
+  /* V3 brand mark — Fraunces wonky italic coral "F" in a ruled square.
+     font-size en cqmin → la F escala con el lado del cuadro (24px navbar, 40/48px
+     en las páginas de contenido) en vez de quedar chiquita y descentrada. */
+  .brand-mark {
+    width: 1.5em; height: 1.5em;
+    background: var(--bg-2);
+    border: 1.5px solid var(--rule);
+    border-radius: var(--radius);
+    display: inline-grid !important;
+    place-items: center;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1;
+    color: var(--accent);
+    font-weight: 600;
+    font-variation-settings: "WONK" 1, "SOFT" 0;
+  }
+  /* La caja escala con el font-size (em); el glifo F ocupa ~0.9em → centrado y proporcional.
+     Por defecto 24px (navbar); las páginas de contenido suben el font-size para el logo grande. */
+  .brand-mark:empty::before { content: "F"; font-size: 0.92em; }
+
+  /* Embedded terminal-style panel — dark island in any theme */
+  .embed {
+    background: #16130f;
+    color: #efe7d8;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 0 0 1px rgba(20,16,12,0.10), 0 24px 64px -20px rgba(20,16,12,0.40), 0 4px 16px rgba(20,16,12,0.10);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+
+  /* Prose for docs/legal */
+  .prose-furx {
+    @apply prose max-w-none;
+    color: var(--ink);
+  }
+  .prose-furx h1 { @apply text-4xl mb-4; color: var(--ink); font-family: var(--font-display); font-variation-settings: "opsz" 120, "WONK" 1, "SOFT" 24; }
+  .prose-furx h2 { @apply text-2xl mt-10 mb-4; color: var(--ink); font-family: var(--font-display); font-variation-settings: "opsz" 80, "WONK" 1, "SOFT" 20; }
+  .prose-furx h3 { @apply text-xl mt-8 mb-3; color: var(--accent); font-family: var(--font-display); }
+  .prose-furx h4 { @apply text-lg mt-6 mb-2; color: var(--ink); font-weight: 600; }
+  .prose-furx p { color: var(--ink); line-height: 1.65; }
+  .prose-furx strong { color: var(--ink); font-weight: 600; }
+  .prose-furx a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  .prose-furx a:hover { color: var(--accent-2); }
+  .prose-furx ul, .prose-furx ol { color: var(--ink); }
+  .prose-furx li::marker { color: var(--accent); }
+  .prose-furx code { color: var(--accent); background: var(--accent-dim); padding: 1px 6px; border-radius: var(--radius); font-size: 0.88em; }
+  .prose-furx pre { background: #16130f; color: #efe7d8; border-radius: var(--radius-lg); }
+  .prose-furx blockquote { border-left: 2px solid var(--accent); padding-left: 16px; font-style: italic; font-family: var(--font-display); color: var(--ink-2); }
+  .prose-furx table { border: 1px solid var(--line-2); width: 100%; }
+  .prose-furx thead { background: var(--bg-2); }
+  .prose-furx th, .prose-furx td { border: 1px solid var(--line-2); padding: 8px 12px; }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .text-pretty { text-wrap: pretty; }
+  .font-italic-serif { font-family: var(--font-display); font-style: italic; font-weight: 500; font-variation-settings: "WONK" 1, "SOFT" 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+@media print {
+  nav, footer, .no-print { display: none !important; }
+  body { background: white; color: black; }
+  main { max-width: 100%; padding: 0; }
+  h1, h2, h3, h4, p, li { color: black; }
+  a { color: var(--accent); text-decoration: underline; }
+}

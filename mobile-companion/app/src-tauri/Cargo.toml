@@ -1,0 +1,45 @@
+[package]
+name = "app"
+version = "0.1.0"
+description = "A Tauri App"
+authors = ["you"]
+license = ""
+repository = ""
+edition = "2021"
+rust-version = "1.77.2"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "app_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.6.2", features = [] }
+
+[dependencies]
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+log = "0.4"
+tauri = { version = "2.11.2", features = [] }
+tauri-plugin-log = "2"
+# T5.4 native WS transport: Rust-side client to the desktop bridge (plaintext
+# ws:// is fine from native Rust — no browser mixed-content rule). ws:// only
+# (never wss), so no TLS feature is pulled.
+tokio = { version = "1", features = ["rt", "sync", "macros", "net", "io-util", "time"] }
+tokio-tungstenite = { version = "0.24", default-features = false, features = ["connect", "handshake"] }
+futures-util = { version = "0.3", default-features = false, features = ["sink"] }
+parking_lot = "0.12"
+# T5.5 native enhancements:
+# - keyring: store the pairing secret in the iOS Keychain (vs the PWA's
+#   localStorage) — Security framework, works on iOS via apple-native.
+# - notification plugin: native local notifications (WKWebView lacks reliable
+#   Web Notifications) for the desktop->phone alerts.
+keyring = { version = "3", default-features = false, features = ["apple-native"] }
+tauri-plugin-notification = "2"
+# T5.5c native voice (SFSpeechRecognizer) — local iOS plugin.
+tauri-plugin-voice = { path = "../tauri-plugin-voice" }
+
+# 065 — escáner de QR nativo (BarcodeDetector/getUserMedia no funcionan en WKWebView iOS). Mobile-only.
+[target.'cfg(any(target_os = "android", target_os = "ios"))'.dependencies]
+tauri-plugin-barcode-scanner = "2"

@@ -1,0 +1,29 @@
+Furx
+Copyright 2026 INVERSO HUB S.R.L.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this software except in compliance with the License.
+You may obtain a copy of the License in the accompanying LICENSE file or at:
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+--------------------------------------------------------------------------------
+
+This product includes third-party software components distributed under their
+own respective licenses (including, among others, the MIT, Apache-2.0, BSD, and
+CC0 licenses). The full set of bundled dependencies and their licenses can be
+found in the project's dependency manifests:
+
+  - Rust crates:  src-tauri/Cargo.toml / src-tauri/Cargo.lock
+  - npm packages: package.json / package-lock.json
+
+Notable bundled or runtime components include Tauri, React, Vite, xterm.js,
+portable-pty, rusqlite, reqwest, tokio, serde, and whisper.cpp. Each is the
+property of its respective copyright holders and is used under the terms of its
+own license.

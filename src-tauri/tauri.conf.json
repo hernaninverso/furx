@@ -1,0 +1,94 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Furx",
+  "version": "0.2.0",
+  "identifier": "cloud.furx.desktop",
+  "build": {
+    "frontendDist": "../dist",
+    "devUrl": "http://127.0.0.1:1421",
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Furx",
+        "width": 1600,
+        "height": 1000,
+        "minWidth": 1100,
+        "minHeight": 700,
+        "fullscreen": false,
+        "resizable": true,
+        "transparent": false,
+        "decorations": true,
+        "titleBarStyle": "Visible"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self' tauri:; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: asset: tauri:; connect-src 'self' ipc: http://ipc.localhost; worker-src 'self' blob:"
+    },
+    "macOSPrivateApi": false
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["app", "dmg", "deb", "rpm", "appimage", "msi", "nsis"],
+    "category": "DeveloperTool",
+    "resources": { "../plugins/bundle": "plugins-bundle" },
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.png"
+    ],
+    "copyright": "© 2026 INVERSO HUB S.R.L.",
+    "publisher": "INVERSO HUB S.R.L.",
+    "homepage": "https://furx.cloud",
+    "shortDescription": "Run any coding agent side-by-side. No proxy.",
+    "longDescription": "Furx is a local-first desktop app that runs coding agents — Claude Code, Codex, Gemini CLI, Aider, and any OpenAI-compatible endpoint — side by side in a grid of terminal panes. Council Mode sends one prompt to up to six models in parallel and synthesizes a consensus you can inspect. Your keys never leave your machine. No proxy. An audit trail the agent can't rewrite. The core is Apache-2.0. macOS / Linux / Windows.",
+    "createUpdaterArtifacts": true,
+    "linux": {
+      "deb": {
+        "depends": ["libwebkit2gtk-4.1-0", "libgtk-3-0", "libayatana-appindicator3-1"],
+        "section": "devel",
+        "priority": "optional"
+      },
+      "rpm": {
+        "epoch": 0,
+        "release": "1",
+        "depends": ["webkit2gtk4.1", "gtk3", "libayatana-appindicator3"]
+      },
+      "appimage": {
+        "bundleMediaFramework": true
+      }
+    },
+    "macOS": {
+      "minimumSystemVersion": "11.0",
+      "entitlements": "entitlements.plist",
+      "infoPlist": "Info.plist"
+    },
+    "windows": {
+      "wix": {
+        "language": ["en-US"]
+      },
+      "nsis": {
+        "installMode": "perMachine"
+      }
+    }
+  },
+  "plugins": {
+    "deep-link": {
+      "desktop": {
+        "schemes": ["furx"]
+      }
+    },
+    "updater": {
+      "active": false,
+      "dialog": false,
+      "endpoints": [
+        "https://github.com/hernaninverso/furx/releases/latest/download/latest.json"
+      ],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDNDNDE0OTY0RkExMUQ4RDkKUldUWjJCSDZaRWxCUEZwbmVRN0FWTnlLVUNDT3U2ZS93OGRCTVJTR2lNQWYybTlhNEo3R1VVZkEK"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+[default]
+description = "On-device voice recognition + Live Activity control"
+permissions = [
+  "allow-start-listening",
+  "allow-stop-listening",
+  "allow-start-live-activity",
+  "allow-stop-live-activity",
+]

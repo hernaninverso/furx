@@ -1,0 +1,109 @@
+/* ════════════════════════════════════════════════════════════════════════
+   FURX DESIGN SYSTEM — V3 "atelier"  ·  canonical theme (single source)
+   ────────────────────────────────────────────────────────────────────────
+   Editorial technical-journal aesthetic: Fraunces (wonky optical serif) for
+   display, Space Mono for data/labels, Hanken Grotesk for UI. Warm paper in
+   light, warm ink in dark. Accent = deep teal (brand) + clay signal. Ruled
+   hairlines, roman numerals, oversized numerals.
+
+   Shared across all surfaces (dashboard / desktop / landing / mobile). Copy
+   this file into each surface's styles dir and @import it first. Dark/light
+   is a `.dark` class on <html> + these CSS variables; an inline head script
+   sets it before paint (anti-FOUC).
+   ════════════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400..700,0..100,0..1;1,9..144,400..600,0..100,0..1&family=Hanken+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+:root {
+  /* ── Light · warm paper ─────────────────────────────────────────── */
+  --bg:#f3efe6; --bg-1:#faf7f0; --bg-2:#ece7da; --bg-3:#e1dccb;
+  --ink:#1c1814; --ink-2:#5a5246; --ink-3:#635849;
+  --line:#d8d1bf; --line-2:#c4bba4; --rule:#1c1814;
+  --accent:#bf3f18; --accent-2:#a8360f; --accent-dim:rgba(255,92,53,.10); --accent-glow:rgba(255,92,53,.07);
+  --clay:#b8543a; --clay-2:#a8482f; --clay-dim:rgba(184,84,58,.10);
+  --ok:#3a6b3f; --warn:#9a6011; --err:#a8412c;
+  --shadow:0 1px 2px rgba(28,24,20,.05),0 10px 26px -12px rgba(28,24,20,.12); --shadow-lift:0 8px 22px -10px rgba(28,24,20,.22);
+  --grain:rgba(28,24,20,.018); --bg-blur:rgba(243,239,230,.85);
+  color-scheme:light;
+}
+.dark {
+  /* ── Dark · warm ink ────────────────────────────────────────────── */
+  --bg:#16130f; --bg-1:#1e1a15; --bg-2:#262119; --bg-3:#2f2920;
+  --ink:#efe7d8; --ink-2:#b3a892; --ink-3:#a0967f;
+  --line:#322b21; --line-2:#41392c; --rule:#efe7d8;
+  --accent:#ff8a6e; --accent-2:#ffb09c; --accent-dim:rgba(255,138,110,.12); --accent-glow:rgba(255,138,110,.10);
+  --clay:#e08a6a; --clay-2:#eba485; --clay-dim:rgba(224,138,106,.12);
+  --ok:#7fc98a; --warn:#e8b765; --err:#f0816f;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 28px -12px rgba(0,0,0,.55); --shadow-lift:0 10px 30px -10px rgba(0,0,0,.7);
+  --grain:rgba(255,255,255,.022); --bg-blur:rgba(22,19,15,.85);
+  color-scheme:dark;
+}
+
+:root {
+  /* ── Type / scale / motion (theme-independent) ──────────────────── */
+  --font-display:"Fraunces",Georgia,serif;
+  --font-sans:"Hanken Grotesk",system-ui,sans-serif;
+  --font-mono:"Space Mono","SF Mono",ui-monospace,monospace;
+  --wonk:"WONK" 1,"SOFT" 0;
+  --radius:3px; --radius-lg:5px;
+  --ease:cubic-bezier(.2,.7,.3,1); --dur-fast:130ms; --dur:240ms;
+}
+
+/* ── Base elements ───────────────────────────────────────────────── */
+.furx-base {
+  background:var(--bg); color:var(--ink);
+  font-family:var(--font-sans); line-height:1.5;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  transition:background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.furx-base h1,.furx-base h2,.furx-base h3 {
+  font-family:var(--font-display); font-weight:400; letter-spacing:-.012em;
+  font-variation-settings:"opsz" 110,"WONK" 1,"SOFT" 30; color:var(--ink);
+}
+.furx-base h1{font-size:clamp(30px,4vw,46px);line-height:.98}
+.furx-base h1 em,.furx-base h2 em{font-style:italic;font-weight:500}
+.furx-base code,.furx-base pre,.furx-base kbd{font-family:var(--font-mono)}
+.furx-base ::selection{background:var(--clay-dim)}
+
+/* ── Atelier primitives (reused across surfaces) ─────────────────── */
+.fr{font-family:var(--font-display);font-optical-sizing:auto;font-variation-settings:var(--wonk)}
+.mono{font-family:var(--font-mono)}
+.lbl{font-family:var(--font-mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.16em;color:var(--ink-3)}
+
+.fx-mark{
+  display:inline-grid;place-items:center;width:34px;height:34px;
+  border:1.5px solid var(--rule);border-radius:var(--radius);background:var(--bg-2);
+  font-family:var(--font-display);font-style:italic;font-weight:600;font-size:23px;
+  font-variation-settings:"WONK" 1,"SOFT" 0;color:var(--ink);line-height:1;
+}
+.fx-mark::before{content:"F"}
+
+.fx-card{background:var(--bg-1);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow)}
+.fx-rule{border:0;border-top:1.5px solid var(--rule)}
+.fx-num{font-family:var(--font-display);font-weight:500;color:var(--clay);font-variation-settings:"WONK" 1;line-height:.8}
+
+.fx-pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:9.5px;
+  text-transform:uppercase;letter-spacing:.1em;padding:2px 8px;border:1px solid var(--line-2);
+  border-radius:1px;color:var(--ink-2);background:var(--bg-2)}
+.fx-pill-ac{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 40%,transparent);background:var(--accent-dim)}
+.fx-pill-clay{color:var(--clay);border-color:var(--clay);background:var(--clay-dim)}
+.fx-pill-ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 35%,transparent)}
+.fx-pill-warn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 35%,transparent)}
+.fx-pill-err{color:var(--err);border-color:color-mix(in srgb,var(--err) 35%,transparent)}
+
+.fx-btn{display:inline-flex;align-items:center;gap:7px;font-family:var(--font-mono);font-size:12px;
+  text-transform:uppercase;letter-spacing:.08em;padding:7px 14px;border-radius:var(--radius);cursor:pointer;
+  border:1.5px solid var(--rule);background:transparent;color:var(--ink);transition:all var(--dur-fast) var(--ease)}
+.fx-btn:hover{background:var(--ink);color:var(--bg)}
+.fx-btn-primary{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.fx-btn-primary:hover{background:var(--accent-2);border-color:var(--accent-2);color:var(--bg)}
+.fx-btn:disabled{opacity:.5;cursor:default}
+
+.fx-input{width:100%;background:var(--bg-1);border:1px solid var(--line-2);border-radius:var(--radius);
+  padding:8px 11px;font-family:var(--font-mono);font-size:12.5px;color:var(--ink)}
+.fx-input::placeholder{color:var(--ink-3)}
+.fx-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{transition-duration:.01ms !important;animation-duration:.01ms !important}
+}

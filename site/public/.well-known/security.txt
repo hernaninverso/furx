@@ -1,0 +1,10 @@
+Contact: mailto:security@furx.cloud
+Contact: https://github.com/hernaninverso/furx/security/advisories/new
+Expires: 2027-05-27T00:00:00.000Z
+Preferred-Languages: en, es
+Canonical: https://furx.cloud/.well-known/security.txt
+Policy: https://furx.cloud/security/
+Acknowledgments: https://furx.cloud/security/#hall-of-fame
+Hiring: https://furx.cloud/community/
+# PGP key: published at https://keys.openpgp.org/search?q=security%40furx.cloud
+# Encrypt sensitive reports — fingerprint pending publication post-launch.

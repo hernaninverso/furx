@@ -1,0 +1,18 @@
+{
+  "name": "git-diff",
+  "version": "1.0.0",
+  "description": "Diff sin commitear (git diff --stat).",
+  "entrypoint": "run.sh",
+  "entrypoint_sha256": "c9c5c5003fd949ec0a163f5d0730410418a00c7ff79b5cb44689a1afba96efaf",
+  "permissions": {
+    "net": [],
+    "fs_read": [
+      "."
+    ],
+    "fs_write": [],
+    "shell": false,
+    "secrets": []
+  },
+  "signature": "4NrrUK0EakcgzFZ/9TNRtl1VtObxCxsgx+6RaWDgBdNEw8sj80oCtQo5128WlTahHXPPTUvHZlebLkJZ+KmjCg==",
+  "pubkey": "bgkQbOB0kcIRVzmmv7FVf8Bm2Cx/UPsDbT0VNcBrOp8="
+}

@@ -1,0 +1,38 @@
+{
+  "name": "codebase-memory",
+  "version": "1.0.0",
+  "description": "Structural code knowledge graph (search_graph, get_code_snippet, trace_path) as a signed MCP server. Read-only over the repo, index stored locally per project, no network.",
+  "entrypoint": "run.sh",
+  "entrypoint_sha256": "42eb497d9beae83dffe47e8fdc9d1f920ef049db28e19201ab8d2d30b5a53a5e",
+  "permissions": {
+    "net": [],
+    "fs_read": [
+      "$PROJECT_ROOT"
+    ],
+    "fs_write": [
+      "$FURX_DATA/codebase-memory/$PROJECT_KEY",
+      "$HOME/.cache/codebase-memory-mcp"
+    ],
+    "shell": false,
+    "secrets": []
+  },
+  "signature": "Qhb29J/45486PR9zLxVT25/wqpmKIuNnGCaIsz/scrBJ+hZiQn6DxBWYQhcEkUERY3JCSVQ0jlWA/rkGrSENDQ==",
+  "pubkey": "bgkQbOB0kcIRVzmmv7FVf8Bm2Cx/UPsDbT0VNcBrOp8=",
+  "mcp": {
+    "command": "run.sh",
+    "args": [],
+    "env": {
+      "XDG_CACHE_HOME": "$FURX_DATA/codebase-memory/$PROJECT_KEY"
+    },
+    "index_command": {
+      "command": "run.sh",
+      "args": [
+        "index",
+        "$PROJECT_ROOT"
+      ],
+      "env": {
+        "XDG_CACHE_HOME": "$FURX_DATA/codebase-memory/$PROJECT_KEY"
+      }
+    }
+  }
+}

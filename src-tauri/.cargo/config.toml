@@ -1,0 +1,6 @@
+# Spec 039: the keychain_bearer tests share one process-global in-process mock + cache. Running them
+# single-threaded is defence-in-depth so the cache-hit / backoff assertions (which rely on a known
+# MOCK_CALL_COUNT) never flake under cargo's default parallel test runner. The real-Keychain e2e
+# test is also a process-global resource that benefits from serial execution.
+[env]
+RUST_TEST_THREADS = "1"

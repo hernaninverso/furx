@@ -1,0 +1,25 @@
+{
+  "name": "github-mcp",
+  "version": "1.0.0",
+  "description": "GitHub MCP server (github/github-mcp-server, MIT) — PR/issue/repo tools over api.github.com. BYOK: GitHub token from the OS Keychain via secret-grant (never hardcoded). net default-deny: only api.github.com. Runtime dep: install github-mcp-server (or set GITHUB_MCP_BIN).",
+  "entrypoint": "run.sh",
+  "entrypoint_sha256": "4bbf1f55f426762ff2e436c0eb20c79a52d6e61e1cf27e63fa0a7f6f8d081ed6",
+  "permissions": {
+    "net": [
+      "api.github.com"
+    ],
+    "fs_read": [],
+    "fs_write": [],
+    "shell": false,
+    "secrets": [
+      "GITHUB_PERSONAL_ACCESS_TOKEN"
+    ]
+  },
+  "signature": "uYz6DVVzkPb32s3rSEfUs6TY8YKM+4VOETFCx1Mp8amjzgqsI7KLd5McBCVNZWE/SJ5Ul/HRM2keJn7UP34hAA==",
+  "pubkey": "bgkQbOB0kcIRVzmmv7FVf8Bm2Cx/UPsDbT0VNcBrOp8=",
+  "mcp": {
+    "command": "run.sh",
+    "args": [],
+    "env": {}
+  }
+}

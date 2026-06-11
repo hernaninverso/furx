@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- TCC usage descriptions: macOS muestra estos textos cuando la app pide
+         permisos. Council 7-voces 2026-05-27: claros, en español, explicando
+         qué función usa qué permiso. NSAppleEvents es el grande (tmux). -->
+    <key>NSAppleEventsUsageDescription</key>
+    <string>Furx necesita Apple Events para spawnear tmux como subproceso (cada panel corre dentro de su propia sesión tmux para sobrevivir reinicios).</string>
+
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Solo si activás Voice Mode (⌘⇧V): graba 5s vía sox + transcribe localmente con whisper.cpp. El audio nunca sale de tu Mac.</string>
+
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>Voice Mode usa whisper.cpp local (no Apple Speech Recognition). Esta entrada existe solo por compliance con Tauri default permission set.</string>
+
+    <key>NSDesktopFolderUsageDescription</key>
+    <string>Furx NO escribe en Desktop por sí mismo. Si macOS solicita el permiso, podés rechazar — la app funciona igual.</string>
+
+    <key>NSDocumentsFolderUsageDescription</key>
+    <string>Solo si abrís un proyecto desde Documents vía Connect Wizard o Card → Open in Claude.</string>
+
+    <key>NSDownloadsFolderUsageDescription</key>
+    <string>Solo si arrastrás un archivo desde Downloads al modal de pegado inteligente.</string>
+
+    <!-- mDNS Bonjour services para el companion mobile (mobile_bridge BLOQUE 7). -->
+    <key>NSBonjourServices</key>
+    <array>
+        <string>_furx._tcp</string>
+    </array>
+
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>Furx expone un bridge mDNS en _furx._tcp.local. para que el companion mobile (cuando lo instales en tu teléfono) pueda encontrar tu Mac en la LAN.</string>
+
+    <!-- High-DPI + dark-mode preference -->
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>NSRequiresAquaSystemAppearance</key>
+    <false/>
+</dict>
+</plist>

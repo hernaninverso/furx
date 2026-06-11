@@ -1,0 +1,26 @@
+{
+  "name": "context7",
+  "version": "1.0.0",
+  "description": "context7 (upstash/context7, MIT) — version-specific library docs into the agent context. OPT-IN / HOSTED: the local server is a thin client of the Context7 hosted API (queries leave your machine). net default-deny: only context7.com + mcp.context7.com. BYOK: CONTEXT7_API_KEY from the Keychain (optional; anonymous is rate-limited). Runtime dep: npx @upstash/context7-mcp (or set CONTEXT7_MCP_BIN).",
+  "entrypoint": "run.sh",
+  "entrypoint_sha256": "bce0d3d7454edc5fbf40dd723926470d09b10ce2b8d8ca7ddcd1adfde3e337a7",
+  "permissions": {
+    "net": [
+      "context7.com",
+      "mcp.context7.com"
+    ],
+    "fs_read": [],
+    "fs_write": [],
+    "shell": false,
+    "secrets": [
+      "CONTEXT7_API_KEY"
+    ]
+  },
+  "signature": "rhpgmEd+jPAkg1YvmyLIRHmolxFK7uEkrtCDxu/X6CRVJ9t/I8FYqoD33pXegBdaplPVi1J46o4me0RCp8HvAA==",
+  "pubkey": "bgkQbOB0kcIRVzmmv7FVf8Bm2Cx/UPsDbT0VNcBrOp8=",
+  "mcp": {
+    "command": "run.sh",
+    "args": [],
+    "env": {}
+  }
+}

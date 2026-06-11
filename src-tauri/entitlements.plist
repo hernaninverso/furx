@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- WebKit's JavaScript engine needs JIT + writable-executable memory. -->
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <true/>
+    <!-- Functional entitlements (network, file pickers, voice/mic). -->
+    <key>com.apple.security.network.client</key>
+    <true/>
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+    <key>com.apple.security.device.audio-input</key>
+    <true/>
+    <!--
+      Removed (hardened-runtime weakening, not needed by Furx):
+        com.apple.security.cs.disable-library-validation
+        com.apple.security.cs.disable-executable-page-protection
+      If a notarized build ever fails to launch (WebKit JIT), re-test whether
+      allow-unsigned-executable-memory alone suffices before re-adding either.
+    -->
+</dict>
+</plist>

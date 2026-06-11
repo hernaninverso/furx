@@ -1,0 +1,20 @@
+# gitleaks — fingerprints de falsos positivos verificados (release-readiness 2026-06-07).
+# Todos son placeholders/fixtures de test, NO secretos reales. Revisar caso por caso si reaparecen
+# con un fingerprint nuevo (cambian al moverse de línea/commit).
+#
+# Claves PLACEHOLDER en código/tests (sk-... fake, BYOK-key-1234):
+#   meta_decision.rs:1292 — fixture del test `local_sanitizer_redacts_secret_before_post` (verifica que
+#   el sk- se REDACTA antes del POST; el valor es fake a propósito).
+139bd7aa3c7dc53b9e9d62979269767f2877ce20:src-tauri/src/services/meta_decision.rs:generic-api-key:1292
+c9f8bf748f606a1349d9d2aba1ecc7a130c6d48f:src-tauri/src/services/meta_decision.rs:generic-api-key:769
+d9dc829b6e9204f85db518ab21a2231c2f607afb:src-tauri/src/services/crash_log.rs:generic-api-key:495
+7a4f8fea62b0b10944f8bee6a3f088a018d72fa7:src-tauri/src/services/crash_log.rs:generic-api-key:416
+4ce850d27be5401b018ae43eaf7943acd45b0ffb:src-tauri/src/services/audit_retention.rs:generic-api-key:1072
+# SECRET de test HMAC (0123456789abcdef×4) en fixtures de firma del bridge móvil:
+2d3d554b8d240c8f26eddc0955518aaf9c8c9a46:mobile-companion/pwa/outbound-sign.test.mjs:generic-api-key:6
+651b2b1666654681c091c15a955997e4181fb9b8:mobile-companion/pwa/sign.test.mjs:generic-api-key:6
+651b2b1666654681c091c15a955997e4181fb9b8:src-tauri/src/services/mobile_bridge.rs:generic-api-key:952
+# Nombre de clave de localStorage (no secreto): furx_consent_v1
+3b1323ace716087d9df73c612e58ee00d818bd83:site/src/components/CookieConsent.tsx:generic-api-key:6
+# Cláusula SQL UPSERT (initial_prompt=excluded.initial_prompt), no secreto:
+4be551484876e563fff546e39761325fb6f6dc4d:src-tauri/src/services/pane_templates.rs:generic-api-key:17
