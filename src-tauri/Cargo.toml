@@ -30,7 +30,7 @@ rusqlite_migration = "1"
 parking_lot = "0.12"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-dirs = "5"
+dirs = "6"
 anyhow = "1"
 thiserror = "1"
 chrono = { version = "0.4", features = ["serde"] }
