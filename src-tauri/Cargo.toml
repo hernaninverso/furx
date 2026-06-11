@@ -66,7 +66,7 @@ toml = "0.8"
 wasmtime = { version = "27", optional = true, default-features = false, features = ["cranelift", "runtime", "wat"] }
 notify = "6"
 notify-debouncer-mini = "0.4"
-axum = { version = "0.7", default-features = false, features = ["http1", "json", "tokio", "ws"] }
+axum = { version = "0.8", default-features = false, features = ["http1", "json", "tokio", "ws"] }
 subtle = "2"
 # Native macOS Keychain API (no argv leak via ps -ef). HIGH fix (Gemini audit B1).
 keyring = { version = "3", default-features = false, features = ["apple-native", "sync-secret-service", "windows-native"] }
