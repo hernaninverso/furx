@@ -1102,6 +1102,13 @@ fn monitor_cap_for_tier(tier: &str) -> Option<usize> {
 
 // ── Cards (incidents) ───────────────────────────────────────────────
 
+/// El seed de demo es una herramienta SÓLO de desarrollo: se permite en builds debug y se
+/// rechaza en release. Predicado puro para poder verificar el invariante en cualquier perfil
+/// (`cargo test --release` incluido) sin construir un `AppState`. Ver `seed_demo_cards`.
+pub(crate) fn seed_demo_allowed() -> bool {
+    cfg!(debug_assertions)
+}
+
 #[tauri::command]
 pub fn seed_demo_cards(state: State<'_, AppState>) -> Result<usize, String> {
     // P0b (audit 3-frontera HIGH 1): defensa not-bypasseable. El seed de demo es una
@@ -1109,7 +1116,7 @@ pub fn seed_demo_cards(state: State<'_, AppState>) -> Result<usize, String> {
     // alguna superficie lo invoque (palette universal, deeplink, MCP). NO usamos `#[cfg]`
     // para borrar el comando: queda registrado/compilado para no romper `generate_handler!`
     // ni el test de cobertura del registry — es un guard de runtime, no condicional de build.
-    if !cfg!(debug_assertions) {
+    if !seed_demo_allowed() {
         return Err("seed demo solo disponible en builds de desarrollo".into());
     }
     let demos = [

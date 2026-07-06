@@ -4021,22 +4021,16 @@ mod tests {
         assert!(base.extra.get("dev_only").is_none());
     }
 
-    /// Defensa en capas (HIGH 1): el guard de runtime de `seed_demo_cards` está atado a
-    /// `cfg!(debug_assertions)`. NO podemos flipear ese flag en un unit test (los tests corren con
-    /// debug_assertions ON), pero documentamos el invariante: en builds de RELEASE
-    /// (`debug_assertions == false`) el comando DEBE rechazar. Acá verificamos al menos que el flag
-    /// de build coincide con la semántica esperada del guard (en debug NO rechaza → permite seedear
-    /// en dev). El rechazo en release queda cubierto por la condición `!cfg!(debug_assertions)`.
-    // 058 (release-readiness): la aserción es INTENCIONALMENTE sobre una constante de build
-    // (`cfg!(debug_assertions)`) — documenta el invariante "los tests corren en debug" (el rechazo en
-    // release lo cubre `!cfg!(debug_assertions)` del comando). No es un test vacío por error.
-    #[allow(clippy::assertions_on_constants)]
+    /// Defensa en capas (HIGH 1): el guard de runtime de `seed_demo_cards` está atado al perfil de
+    /// build — permite el seed en debug y lo rechaza en release (`debug_assertions == false`). El CI
+    /// corre `cargo test --release`, así que el test NO puede asumir debug: verifica el predicado de
+    /// producción (`seed_demo_allowed`) contra el perfil actual, sea cual sea. Pasa en debug y release.
     #[test]
     fn seed_demo_guard_matches_build_profile() {
-        // En el perfil de test (debug) el guard NO debe activarse.
-        assert!(
+        assert_eq!(
+            crate::commands::seed_demo_allowed(),
             cfg!(debug_assertions),
-            "los tests corren en debug; el guard de seed_demo se activa SÓLO en release"
+            "seed_demo_allowed() debe seguir el perfil de build (permite en debug, rechaza en release)"
         );
     }
 }
