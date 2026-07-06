@@ -1396,7 +1396,7 @@ fn verify_frame(state: &BridgeState, msg: &MobileMessage) -> Result<(), &'static
 
 async fn send_msg(socket: &mut WebSocket, msg: &MobileMessage) -> bool {
     match serde_json::to_string(msg) {
-        Ok(s) => socket.send(Message::Text(s)).await.is_ok(),
+        Ok(s) => socket.send(Message::Text(s.into())).await.is_ok(),
         Err(_) => false,
     }
 }
