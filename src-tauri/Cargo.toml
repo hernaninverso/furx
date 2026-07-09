@@ -38,7 +38,7 @@ uuid = { version = "1", features = ["v4", "serde"] }
 once_cell = "1"
 portable-pty = "0.8"
 bytes = "1"
-lru = "0.12"
+lru = "0.18"
 governor = "0.6"
 nonzero_ext = "0.3"
 reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json", "stream"] }
