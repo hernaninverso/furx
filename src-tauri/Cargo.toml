@@ -60,7 +60,7 @@ unicode-normalization = "0.1"
 # spec-kit 043 — jitter for BEGIN IMMEDIATE retry backoff (±20ms anti thundering-herd).
 rand = "0.8"
 # spec-kit 043 F4 — parse sources.user.toml (discovery local sources, type=local only).
-toml = "0.8"
+toml = "1.1"
 # spec-kit 001 · T028 — WASM runtime for untrusted-logic plugins. Optional + off by
 # default (YAGNI: no WASM plugins ship yet); enable with --features wasm-runtime.
 wasmtime = { version = "27", optional = true, default-features = false, features = ["cranelift", "runtime", "wat"] }
